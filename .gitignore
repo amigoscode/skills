@@ -13,11 +13,8 @@
 # Dependencies
 **/node_modules/
 
-# Generated output — each skill writes to a top-level <skill-name>/ dir
+# Generated output (skills now write to ~/amigoscode-skills/<skill>/, outside the repo)
 **/output/
-/carousel/
-/infographic/
-/x-card/
 
 # OS / editor cruft
 .DS_Store

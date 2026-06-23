@@ -1,0 +1,11 @@
+{
+  "outputDir": "~/amigoscode-skills/x-card",
+  "profilePhoto": "~/me2.jpg",
+  "name": "Nelson Djalo",
+  "handle": "@nelsondjalo",
+  "retweets": "306",
+  "likes": "3.1K",
+  "ctaLine": "Follow Amigoscode for lessons that turn developers into senior engineers",
+  "newsletterUrl": "https://newsletter.amigoscode.com",
+  "newsletterLine": "One backend lesson in your inbox every week → {{NEWSLETTER_URL}}"
+}

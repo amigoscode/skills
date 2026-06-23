@@ -8,12 +8,12 @@
     "accentLight": "#c4b5fd",
     "glow": "#7D2AE8"
   },
-  "footerText": "www.yourdomain.com",
+  "footerText": "www.amigoscode.com",
   "logoPath": "assets/logo.svg",
   "outroLogoPath": "assets/outro-logo.svg",
   "outroPhoto": "assets/outro-photo.png",
   "outroCta": "Like and Follow for more...",
-  "ctaLine": "Follow for practical lessons that help developers think like real software engineers",
-  "newsletterUrl": "",
+  "ctaLine": "Follow Amigoscode for lessons that turn developers into senior engineers",
+  "newsletterUrl": "https://newsletter.amigoscode.com",
   "newsletterLine": "One backend lesson in your inbox every week → {{NEWSLETTER_URL}}"
 }

@@ -8,8 +8,8 @@ description: "Generate branded LinkedIn carousel slides (1080x1350px PNGs), a co
 Generate branded 1080x1350px LinkedIn carousel PNGs for any tech topic, plus a
 combined PDF, beat-synced MP4s, a GIF, and ready-to-post captions.
 
-Branding and paths are configurable. See **Step 0**. The first time the skill
-runs it asks for these and saves them to `config.json`.
+Branding and paths are configurable in `~/amigoscode-skills/carousel-config.json`.
+See **Step 0**. Bundled defaults work out of the box.
 
 Paths below are written relative to the skill's own directory (the folder
 containing this `SKILL.md`), referred to as `SKILL_DIR`. Run commands from there,
@@ -26,13 +26,18 @@ or substitute the absolute install path.
 cd SKILL_DIR/scripts && npm install && npx playwright install chromium
 ```
 
-## Step 0: Load configuration (first-run onboarding)
+## Step 0: Load configuration
 
-Read `SKILL_DIR/config.json`.
+Read `~/amigoscode-skills/carousel-config.json` (expand `~`).
 
-**If `config.json` does NOT exist**, this is the first run. Copy
-`SKILL_DIR/config.example.json` to `SKILL_DIR/config.json`, then use the Ask tool
-to collect any values the user wants to change. Fields:
+- **If it exists**, load and use its values.
+- **If it does NOT exist** (first run), create the `~/amigoscode-skills/` folder if
+  needed and copy `SKILL_DIR/config.default.json` to
+  `~/amigoscode-skills/carousel-config.json`, then use it.
+
+The bundled `config.default.json` already holds working Amigoscode defaults, so the
+skill produces correct output even before anything is edited. To customize, edit
+`~/amigoscode-skills/carousel-config.json` (no need to touch the skill folder). Fields:
 
 **Paths.** `outputDir`, `techIconsDir`, and `figmaConfigPath`:
 
@@ -75,8 +80,7 @@ the fields below at files anywhere else:
 10. **newsletterUrl** / **newsletterLine**: optional newsletter subscribe line. If
     `newsletterUrl` is empty, the subscribe line is omitted.
 
-**If `config.json` exists**, load it and use these values throughout. Relative
-asset paths (`techIconsDir`, `figmaConfigPath`, `logoPath`, `outroPhoto`,
+Relative asset paths (`techIconsDir`, `figmaConfigPath`, `logoPath`, `outroPhoto`,
 `outroLogoPath`) are resolved against `SKILL_DIR`; expand a leading `~` to the home
 directory.
 

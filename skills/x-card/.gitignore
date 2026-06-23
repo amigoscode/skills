@@ -1,4 +1,4 @@
-# Per-user config (created on first run; keep config.example.json)
+# Local per-user config (the live config now lives in ~/amigoscode-skills/)
 config.json
 *.local.json
 

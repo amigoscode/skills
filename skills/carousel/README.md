@@ -46,8 +46,9 @@ There is no build step.
 
 ## Configuration
 
-On first run the skill copies [`config.example.json`](./config.example.json) to
-`config.json` (gitignored) and asks for any values you want to change:
+Config lives in `~/amigoscode-skills/carousel-config.json`. On first run the skill
+creates it by copying the bundled [`config.default.json`](./config.default.json)
+(Amigoscode defaults that work out of the box). Edit that central file to customize:
 
 ```jsonc
 {

@@ -1,0 +1,9 @@
+{
+  "footerText": "www.amigoscode.com",
+  "logoPath": "assets/amigoscode-wordmark.svg",
+  "outputDir": "~/amigoscode-skills/infographic",
+  "personPhoto": "~/me2.jpg",
+  "ctaLine": "Follow Amigoscode for lessons that turn developers into senior engineers",
+  "newsletterUrl": "https://newsletter.amigoscode.com",
+  "newsletterLine": "One backend lesson in your inbox every week → {{NEWSLETTER_URL}}"
+}

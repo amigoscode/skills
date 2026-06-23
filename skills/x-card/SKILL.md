@@ -22,13 +22,18 @@ the skill's own directory (the folder containing this `SKILL.md`), referred to a
 - The display fonts (`Outfit-Bold.ttf`, `WorkSans-Regular.ttf`) and the verified
   badge are bundled in `SKILL_DIR/assets/`. No external fonts needed.
 
-## Step 0: Load configuration (first-run onboarding)
+## Step 0: Load configuration
 
-Read `SKILL_DIR/config.json`.
+Read `~/amigoscode-skills/x-card-config.json` (expand `~`).
 
-**If `config.json` does NOT exist**, copy `SKILL_DIR/config.example.json` to
-`SKILL_DIR/config.json`, then use the Ask tool to collect any values the user wants
-to change. Fields:
+- **If it exists**, load and use its values.
+- **If it does NOT exist** (first run), create the `~/amigoscode-skills/` folder if
+  needed and copy `SKILL_DIR/config.default.json` to
+  `~/amigoscode-skills/x-card-config.json`, then use it.
+
+The bundled `config.default.json` already holds working Amigoscode defaults, so the
+skill produces correct output even before anything is edited. To customize, edit
+`~/amigoscode-skills/x-card-config.json` (no need to touch the skill folder). Fields:
 
 1. **outputDir**: where cards are saved. Default: `~/amigoscode-skills/x-card`.
 2. **profilePhoto**: circular avatar on the card. Default: `assets/profile.png`
@@ -40,9 +45,8 @@ to change. Fields:
 7. **newsletterUrl** / **newsletterLine**: optional newsletter subscribe line. If
    `newsletterUrl` is empty, the subscribe line is omitted.
 
-**If `config.json` exists**, load it and use these values. Relative `profilePhoto`
-paths resolve against `SKILL_DIR`; expand a leading `~`. A missing photo or font
-falls back to the bundled copy.
+Relative `profilePhoto` paths resolve against `SKILL_DIR`; expand a leading `~`. A
+missing photo or font falls back to the bundled copy.
 
 ## Output Structure
 

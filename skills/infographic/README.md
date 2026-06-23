@@ -55,17 +55,18 @@ The first time the skill runs it asks you for:
 - **Footer text**: the URL shown bottom-left (default `www.amigoscode.com`)
 - **Logo path**: the wordmark shown bottom-center, also used as the top-left fallback icon for generic topics (default `assets/amigoscode-wordmark.svg`)
 
-Your answers are saved to `config.json` (git-ignored). To rebrand, drop your own SVG/PNG into `assets/` and edit `config.json`:
+Config lives in `~/amigoscode-skills/infographic-config.json`. On first run the skill creates it by copying the bundled [`config.default.json`](./config.default.json) (Amigoscode defaults that work out of the box). To rebrand, drop your own SVG/PNG into `assets/` and edit the central file:
 
 ```json
 {
   "footerText": "www.yourdomain.com",
   "logoPath": "assets/your-wordmark.svg",
-  "outputDir": "~/amigoscode-skills/infographic"
+  "outputDir": "~/amigoscode-skills/infographic",
+  "personPhoto": "~/me2.jpg"
 }
 ```
 
-See `config.example.json` for the shape.
+See [`config.default.json`](./config.default.json) for the full shape.
 
 ## Usage
 
@@ -93,7 +94,7 @@ npm run generate -- \
 ```
 infographic-skill/
 ├── SKILL.md                      # the skill workflow Claude follows
-├── config.example.json           # template for per-user config
+├── config.default.json           # bundled defaults (copied to ~/amigoscode-skills/ on first run)
 ├── .env.example                  # template for your API key
 ├── package.json
 └── assets/

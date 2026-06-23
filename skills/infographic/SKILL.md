@@ -13,7 +13,7 @@ Generate branded educational infographic diagrams. The user provides a topic, yo
 
 You are NOT done until BOTH exist in the output folder. Create a todo per step so the caption is not skipped. The image alone is an incomplete result.
 
-Branding (logo, footer text) is configurable. See **Step 0**. The first time the skill runs it asks for these and saves them to `config.json`.
+Branding (logo, footer text) is configurable in `~/amigoscode-skills/infographic-config.json`. See **Step 0**. Bundled defaults work out of the box.
 
 ## Prerequisites
 
@@ -42,30 +42,22 @@ Examples (with the default `outputDir`):
 
 ## Step-by-Step Workflow
 
-### Step 0: Load configuration (first-run onboarding)
+### Step 0: Load configuration
 
-Read `SKILL_DIR/config.json`.
+Read `~/amigoscode-skills/infographic-config.json` (expand `~`).
 
-**If `config.json` does NOT exist**, this is the first run. Use the Ask tool to collect branding from the user, then write `config.json`. Ask for:
+- **If it exists**, load and use its values.
+- **If it does NOT exist** (first run), create the `~/amigoscode-skills/` folder if needed and copy `SKILL_DIR/config.default.json` to `~/amigoscode-skills/infographic-config.json`, then use it.
 
-1. **Footer text**: the URL or text shown at the bottom-left of every infographic. Default: `www.amigoscode.com`.
-2. **Logo path**: path to an SVG or PNG wordmark shown bottom-center. Default: `assets/amigoscode-wordmark.svg` (the bundled logo). The user can point this at their own file. This logo is also used as the fallback icon for topics with no specific tech icon.
-3. **Person photo**: path to the author's photo shown at the top-left of every infographic (a circular avatar before the tech icon). Leave empty for no photo. Default: empty.
+The bundled `config.default.json` already holds working Amigoscode defaults, so the skill produces correct output even before anything is edited. To customize, edit `~/amigoscode-skills/infographic-config.json` (no need to touch the skill folder). Fields:
 
-Then write `SKILL_DIR/config.json`:
+1. **footerText**: the URL or text shown at the bottom-left of every infographic. Default: `www.amigoscode.com`.
+2. **logoPath**: path to an SVG or PNG wordmark shown bottom-center. Default: `assets/amigoscode-wordmark.svg` (bundled, relative paths resolve against `SKILL_DIR`). Also used as the fallback icon for topics with no specific tech icon.
+3. **personPhoto**: the author's photo shown top-left (circular avatar before the tech icon). Empty string or a missing file means no photo.
+4. **outputDir**: where infographics are saved. Default: `~/amigoscode-skills/infographic`.
+5. **ctaLine** / **newsletterUrl** / **newsletterLine**: caption closing lines (see Step 6).
 
-```json
-{
-  "footerText": "<their footer text>",
-  "logoPath": "<their logo path>",
-  "outputDir": "~/amigoscode-skills/infographic",
-  "personPhoto": "<their photo path, or empty string for none>"
-}
-```
-
-`outputDir` is where infographics are saved. Keep its default unless the user asks to change it.
-
-**If `config.json` exists**, load it and use `footerText`, `logoPath`, `outputDir`, and `personPhoto` throughout the workflow below.
+Use `footerText`, `logoPath`, `outputDir`, `personPhoto`, and the caption lines throughout the workflow below.
 
 ### Step 1: Create the output directory
 
