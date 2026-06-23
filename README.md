@@ -11,12 +11,14 @@ A [Claude Code](https://claude.com/claude-code) plugin bundling Amigoscode's con
 
 ## Installation
 
-Add the marketplace, then install the plugin:
+Once you push it to GitHub (e.g. `amigoscode/amigoscode-plugin`), add the marketplace and install the plugin:
 
 ```
 /plugin marketplace add amigoscode/amigoscode-plugin
 /plugin install amigoscode@amigoscode
 ```
+
+Then the skills resolve as `amigoscode:infographic` and `amigoscode:linkedin-poster`.
 
 Once installed, the skills activate automatically based on what you ask for, or you can invoke them directly (e.g. `/amigoscode:infographic`).
 
