@@ -55,6 +55,14 @@ On first run the skill copies [`config.example.json`](./config.example.json) to
   "techIconsDir": "assets/tech_icons",     // icon set (relative paths resolve to the skill dir)
   "figmaConfigPath": "assets/figma-config.json",
 
+  // Theme — slide colors (defaults reproduce the purple-on-black look)
+  "theme": {
+    "background": "#030303",   // gradient top
+    "accent": "#9a53ff",       // gradient bottom + prompt/page-number accents
+    "accentLight": "#c4b5fd",  // command-name highlight
+    "glow": "#7D2AE8"          // radial glow behind cover/outro
+  },
+
   // Brand (shown on the slides) — swap without touching the skill
   "footerText": "www.yourdomain.com",      // bottom-left footer on cover/content slides
   "logoPath": "assets/logo.svg",           // round logo, top-left of cover/content slides

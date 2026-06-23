@@ -2,6 +2,12 @@
   "outputDir": "~/carousels",
   "techIconsDir": "assets/tech_icons",
   "figmaConfigPath": "assets/figma-config.json",
+  "theme": {
+    "background": "#030303",
+    "accent": "#9a53ff",
+    "accentLight": "#c4b5fd",
+    "glow": "#7D2AE8"
+  },
   "footerText": "www.yourdomain.com",
   "logoPath": "assets/logo.svg",
   "outroLogoPath": "assets/outro-logo.svg",

@@ -43,9 +43,20 @@ to collect any values the user wants to change. Fields:
 3. **figmaConfigPath**: path to the Figma template config. Default:
    `assets/figma-config.json` (bundled).
 
-**Brand (shown on the slides).** These are swappable so the carousel can be
-rebranded without touching the skill. Point them at a brand folder (e.g.
-`~/carousels/brand/`) or leave the bundled defaults:
+**Theme (slide colors).**
+
+3a. **theme**: an object of brand colors used across every slide. Defaults
+    reproduce the standard Amigoscode purple-on-black look:
+    - `background` — gradient top (near-black). Default `#030303`.
+    - `accent` — gradient bottom plus UI accents (prompt `$`, page-number
+      watermark). Default `#9a53ff`.
+    - `accentLight` — the command-name highlight. Default `#c4b5fd`.
+    - `glow` — the radial glow behind the cover and outro. Default `#7D2AE8`.
+    The code-syntax token colors are fixed (One Dark Pro) and not themed.
+
+**Brand (shown on the slides).** The brand files live in the skill's own `assets/`
+folder so they are easy to find and swap in place. Replace those files, or point
+the fields below at files anywhere else:
 
 4. **footerText**: bottom-left footer/website text on the cover and content
    slides (e.g. `www.amigoscode.com`).
@@ -188,15 +199,17 @@ Write a JSON config file to a temp path (e.g. `SKILL_DIR/output/carousel-config.
   "logoPath": "<config.logoPath, ~ and relative paths resolved to absolute>",
   "outroLogoPath": "<config.outroLogoPath, resolved to absolute>",
   "outroPhoto": "<config.outroPhoto, resolved to absolute>",
-  "outroCta": "<config.outroCta>"
+  "outroCta": "<config.outroCta>",
+  "theme": "<config.theme object, copied verbatim>"
 }
 ```
 
 **Copy the brand fields straight from `config.json`** into the render config:
-`footerText`, `logoPath`, `outroLogoPath`, `outroPhoto`, and `outroCta`. Resolve
-each asset path to absolute first (expand a leading `~`; resolve a relative path
-against `SKILL_DIR`). The generator falls back to the bundled `assets/` copy if a
-path does not exist, and omits any element whose value is empty.
+`footerText`, `logoPath`, `outroLogoPath`, `outroPhoto`, `outroCta`, and the whole
+`theme` object. Resolve each asset path to absolute first (expand a leading `~`;
+resolve a relative path against `SKILL_DIR`). The generator falls back to the
+bundled `assets/` copy if a path does not exist, omits any element whose value is
+empty, and falls back to the default palette for any missing `theme` color.
 
 `assetsDir` stays pointed at the bundled `SKILL_DIR/assets` (it provides the swipe
 icon, arrow, and the fallback brand files). The configured `logoPath` /

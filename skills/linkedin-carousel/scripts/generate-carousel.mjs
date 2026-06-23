@@ -112,6 +112,7 @@ async function main() {
     outroLogoPath,
     photoPath: photoPathCfg,
     outroPhoto,
+    theme,
   } = config;
 
   // Structural UI chrome stays bundled with the skill.
@@ -139,6 +140,7 @@ async function main() {
     photoPath,
     footerText,
     outroCta,
+    theme,
   });
 
   // Ensure the output directory exists

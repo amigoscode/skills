@@ -4,6 +4,25 @@ import { renderComparison } from './slides/comparison.mjs';
 import { renderOutro } from './slides/outro.mjs';
 
 /**
+ * Converts a #rrggbb (or #rgb) hex color to an rgba() string at the given alpha.
+ * Falls back to the input unchanged if it is not a hex color.
+ *
+ * @param {string} hex   - Hex color, e.g. "#9a53ff"
+ * @param {number} alpha - Opacity 0..1
+ * @returns {string} An rgba() string
+ */
+function hexToRgba(hex, alpha) {
+  const m = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(hex || '');
+  if (!m) return hex;
+  let h = m[1];
+  if (h.length === 3) h = h.split('').map(c => c + c).join('');
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+/**
  * Builds a complete HTML document containing every slide in the carousel.
  *
  * @param {Object} config
@@ -31,9 +50,17 @@ export function buildCarouselHtml(config) {
     photoPath,
     footerText,
     outroCta,
+    theme = {},
   } = config;
 
-  const coverHtml = renderCover({ coverTitle, techIconSvg, logoSvg, swipeIconSvg, footerText });
+  // Brand theme colors (config-driven, with the original palette as defaults).
+  const bg = theme.background || '#030303';
+  const accent = theme.accent || '#9a53ff';
+  const accentLight = theme.accentLight || '#c4b5fd';
+  const glow = theme.glow || '#7D2AE8';
+  const accentStroke = hexToRgba(accent, 0.5);
+
+  const coverHtml = renderCover({ coverTitle, techIconSvg, logoSvg, swipeIconSvg, footerText, glow });
 
   const contentHtml = contentSlides
     .map((slide, index) => {
@@ -60,7 +87,7 @@ export function buildCarouselHtml(config) {
     })
     .join('\n');
 
-  const outroHtml = renderOutro({ outroLogoSvg, photoPath, outroCta });
+  const outroHtml = renderOutro({ outroLogoSvg, photoPath, outroCta, glow });
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -85,7 +112,7 @@ body {
   position: relative;
   overflow: hidden;
   flex-shrink: 0;
-  background: linear-gradient(to bottom, #030303 0%, #030303 23.057%, #9a53ff 100%);
+  background: linear-gradient(to bottom, ${bg} 0%, ${bg} 23.057%, ${accent} 100%);
 }
 .logo {
   position: absolute;
@@ -175,7 +202,7 @@ body {
   letter-spacing: 9px;
   text-transform: uppercase;
   color: transparent;
-  -webkit-text-stroke: 3px rgba(154, 83, 255, 0.5);
+  -webkit-text-stroke: 3px ${accentStroke};
   opacity: 0.3;
   z-index: 1;
   text-align: right;
@@ -216,11 +243,11 @@ body {
   display: inline-block;
 }
 .content-title .prompt {
-  color: #9a53ff;
+  color: ${accent};
   margin-right: 8px;
 }
 .content-title .cmd {
-  color: #c4b5fd;
+  color: ${accentLight};
 }
 .content-title .arg {
   color: white;
@@ -236,8 +263,8 @@ body {
 .content-title .tk-comment   { color: #7f848e; font-style: italic; }
 .content-title .tk-punctuation { color: #abb2bf; }
 .content-title .tk-property  { color: #61afef; }
-.content-title .tk-prompt    { color: #9a53ff; margin-right: 8px; }
-.content-title .tk-cmd       { color: #c4b5fd; }
+.content-title .tk-prompt    { color: ${accent}; margin-right: 8px; }
+.content-title .tk-cmd       { color: ${accentLight}; }
 .content-title .tk-arg       { color: white; }
 .content-desc {
   font-family: 'Poppins', sans-serif;
