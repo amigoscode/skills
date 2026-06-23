@@ -1,0 +1,14 @@
+# Per-user config (created on first run; keep config.example.json)
+config.json
+*.local.json
+
+# Generated output and temp files
+/output/
+
+# Python bytecode
+__pycache__/
+*.pyc
+
+# OS / editor cruft
+.DS_Store
+*.log

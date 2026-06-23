@@ -17,6 +17,7 @@
 **/output/
 /carousel/
 /infographic/
+/x-card/
 
 # OS / editor cruft
 .DS_Store
