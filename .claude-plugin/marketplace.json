@@ -17,7 +17,7 @@
       "description": "Branded educational infographics (HOW X WORKS diagrams), LinkedIn carousels, and an autonomous LinkedIn poster.",
       "skills": [
         "./skills/infographic",
-        "./skills/linkedin-carousel",
+        "./skills/carousel",
         "./skills/linkedin-poster"
       ]
     }

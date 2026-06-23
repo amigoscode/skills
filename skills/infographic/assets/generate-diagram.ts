@@ -16,7 +16,7 @@ dotenvConfig({
 const { values } = parseArgs({
   options: {
     prompt: { type: "string" },
-    output: { type: "string", default: "~/infographics/diagram.png" },
+    output: { type: "string", default: "~/amigoscode-skills/infographic/diagram.png" },
     ref: { type: "string", multiple: true },
   },
 });
@@ -76,7 +76,7 @@ async function main() {
     contents: [{ role: "user", parts }],
   });
 
-  const outputPath = (values.output || "~/infographics/diagram.png").replace(
+  const outputPath = (values.output || "~/amigoscode-skills/infographic/diagram.png").replace(
     /^~/,
     process.env.HOME || ""
   );

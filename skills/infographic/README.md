@@ -61,7 +61,7 @@ Your answers are saved to `config.json` (git-ignored). To rebrand, drop your own
 {
   "footerText": "www.yourdomain.com",
   "logoPath": "assets/your-wordmark.svg",
-  "outputDir": "~/infographics"
+  "outputDir": "~/amigoscode-skills/infographic"
 }
 ```
 
@@ -85,7 +85,7 @@ npm run generate -- \
   --ref assets/reference-linux-processes.jpeg \
   --ref assets/reference-kafka.jpeg \
   --prompt "<your prompt>" \
-  --output "~/infographics/How Docker Works/raw.png"
+  --output "~/amigoscode-skills/infographic/How Docker Works/raw.png"
 ```
 
 ## Project layout

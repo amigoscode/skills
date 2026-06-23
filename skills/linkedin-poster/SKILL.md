@@ -81,11 +81,11 @@ When scheduling, the minute must be `:00`, `:15`, `:30`, or `:45` — LinkedIn's
 {
   "posts": [
     {
-      "postDir": "~/infographics/How Docker Works",
+      "postDir": "~/amigoscode-skills/infographic/How Docker Works",
       "postFile": "caption.txt",
       "media": {
         "type": "images",
-        "paths": ["~/infographics/How Docker Works/How Docker Works.png"],
+        "paths": ["~/amigoscode-skills/infographic/How Docker Works/How Docker Works.png"],
         "altText": "How Docker works infographic."
       }
     }

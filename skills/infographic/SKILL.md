@@ -25,7 +25,7 @@ Paths below are written relative to the skill's own directory (the folder contai
 
 ## Output Structure
 
-All output goes into a **capitalized folder with spaces** under the configured output directory (`config.json` field `outputDir`, default `~/infographics`):
+All output goes into a **capitalized folder with spaces** under the configured output directory (`config.json` field `outputDir`, default `~/amigoscode-skills/infographic`):
 
 ```
 <outputDir>/How [Topic] Works/
@@ -36,9 +36,9 @@ All output goes into a **capitalized folder with spaces** under the configured o
 ```
 
 Examples (with the default `outputDir`):
-- `~/infographics/How Docker Works/`
-- `~/infographics/How Kafka Works/`
-- `~/infographics/How API Gateway Works/`
+- `~/amigoscode-skills/infographic/How Docker Works/`
+- `~/amigoscode-skills/infographic/How Kafka Works/`
+- `~/amigoscode-skills/infographic/How API Gateway Works/`
 
 ## Step-by-Step Workflow
 
@@ -58,7 +58,7 @@ Then write `SKILL_DIR/config.json`:
 {
   "footerText": "<their footer text>",
   "logoPath": "<their logo path>",
-  "outputDir": "~/infographics",
+  "outputDir": "~/amigoscode-skills/infographic",
   "personPhoto": "<their photo path, or empty string for none>"
 }
 ```

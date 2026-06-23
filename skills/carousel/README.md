@@ -1,4 +1,4 @@
-# linkedin-carousel
+# carousel
 
 Generate branded 1080x1350px LinkedIn carousel slides for any tech topic, plus a
 combined PDF for upload, beat-synced MP4 videos, a GIF, and ready-to-post captions
@@ -51,7 +51,7 @@ On first run the skill copies [`config.example.json`](./config.example.json) to
 
 ```jsonc
 {
-  "outputDir": "~/carousels",              // where carousels are saved
+  "outputDir": "~/amigoscode-skills/carousel",              // where carousels are saved
   "techIconsDir": "assets/tech_icons",     // icon set (relative paths resolve to the skill dir)
   "figmaConfigPath": "assets/figma-config.json",
 

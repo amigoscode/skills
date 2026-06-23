@@ -18,7 +18,7 @@ Skills are markdown files that give AI agents specialized knowledge and workflow
 | Skill | Description |
 |-------|-------------|
 | [infographic](skills/infographic/) | Generate 'HOW X WORKS' educational infographic diagrams for Amigoscode — hand-drawn style diagrams about backend/Java... |
-| [linkedin-carousel](skills/linkedin-carousel/) | Generate branded LinkedIn carousel slides (1080x1350px PNGs), a combined PDF, beat-synced MP4s, a GIF, and platform... |
+| [carousel](skills/carousel/) | Generate branded LinkedIn carousel slides (1080x1350px PNGs), a combined PDF, beat-synced MP4s, a GIF, and platform... |
 | [linkedin-poster](skills/linkedin-poster/) | Fully autonomous LinkedIn poster. Drives the LinkedIn web composer via Playwright/TypeScript to publish posts... |
 <!-- SKILLS:END -->
 
@@ -33,7 +33,7 @@ Use [npx skills](https://github.com/vercel-labs/skills) to install skills direct
 npx skills add amigoscode/skills
 
 # Install specific skills
-npx skills add amigoscode/skills --skill infographic linkedin-carousel linkedin-poster
+npx skills add amigoscode/skills --skill infographic carousel linkedin-poster
 
 # List available skills
 npx skills add amigoscode/skills --list
@@ -53,7 +53,7 @@ Install via Claude Code's built-in plugin system:
 /plugin install amigoscode
 ```
 
-Then the skills resolve as `amigoscode:infographic`, `amigoscode:linkedin-carousel`, and `amigoscode:linkedin-poster`.
+Then the skills resolve as `amigoscode:infographic`, `amigoscode:carousel`, and `amigoscode:linkedin-poster`.
 
 ### Option 3: Clone and Copy
 
@@ -85,7 +85,7 @@ Then reference skills from `.agents/amigoscode-skills/skills/`.
 Each skill has its own dependencies and one-time setup. See the skill READMEs:
 
 - [`skills/infographic/README.md`](./skills/infographic/README.md) — needs a `GEMINI_API_KEY` and `npm install` for the diagram generator and Playwright screenshot step.
-- [`skills/linkedin-carousel/README.md`](./skills/linkedin-carousel/README.md) — needs `npm install` + `npx playwright install chromium`; Python 3 with `librosa` and `ffmpeg` for the beat-synced videos.
+- [`skills/carousel/README.md`](./skills/carousel/README.md) — needs `npm install` + `npx playwright install chromium`; Python 3 with `librosa` and `ffmpeg` for the beat-synced videos.
 - [`skills/linkedin-poster/README.md`](./skills/linkedin-poster/README.md) — needs `npm install` + `npx playwright install chromium`, then a one-time LinkedIn login that is saved for future runs.
 
 Secrets (`.env`) and personal config (`config.json`, saved LinkedIn sessions) are gitignored and never bundled. Copy the `.example` files and fill in your own.
@@ -102,7 +102,7 @@ Once installed, just ask your agent to help with content tasks:
 → Uses infographic skill
 
 "Create a LinkedIn carousel about the top 10 Git commands"
-→ Uses linkedin-carousel skill
+→ Uses carousel skill
 
 "Post this on LinkedIn now"
 → Uses linkedin-poster skill
@@ -115,7 +115,7 @@ You can also invoke skills directly:
 
 ```
 /infographic
-/linkedin-carousel
+/carousel
 /linkedin-poster
 ```
 

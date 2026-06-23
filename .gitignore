@@ -13,9 +13,10 @@
 # Dependencies
 **/node_modules/
 
-# Generated output
+# Generated output — each skill writes to a top-level <skill-name>/ dir
 **/output/
-/carousels/
+/carousel/
+/infographic/
 
 # OS / editor cruft
 .DS_Store

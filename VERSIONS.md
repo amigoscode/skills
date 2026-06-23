@@ -5,7 +5,7 @@ Current versions of all skills. Agents can compare against local versions to che
 | Skill | Version | Last Updated | Summary |
 |-------|---------|--------------|---------|
 | infographic | 1.1.0 | 2026-06-23 | Generate branded "HOW X WORKS" educational infographic diagrams for backend/Java topics, exported as a final PNG plus caption. |
-| linkedin-carousel | 1.0.0 | 2026-06-23 | Generate branded LinkedIn carousel slides (PNGs), a combined PDF, beat-synced MP4s, a GIF, and platform captions for any tech topic. |
+| carousel | 1.0.0 | 2026-06-23 | Generate branded LinkedIn carousel slides (PNGs), a combined PDF, beat-synced MP4s, a GIF, and platform captions for any tech topic. |
 | linkedin-poster | 1.0.0 | 2026-06-23 | Fully autonomous LinkedIn poster that publishes immediately or schedules text, carousel, or image posts via Playwright. |
 
 ## Recent Changes
@@ -13,5 +13,8 @@ Current versions of all skills. Agents can compare against local versions to che
 ### 2026-06-23
 - Initial version tracking added
 - Added `infographic` skill for branded "HOW X WORKS" educational diagrams
-- Added `linkedin-carousel` skill for branded carousel slides, PDF, videos, and captions
+- Added `carousel` skill for branded carousel slides, PDF, videos, and captions
 - Added `linkedin-poster` skill for autonomous LinkedIn publishing and scheduling
+- Renamed the repo to `amigoscode/skills`
+- Renamed the `linkedin-carousel` skill to `carousel` (reinstall if you had the old name)
+- Standardized skill output to `~/amigoscode-skills/<skill-name>/`

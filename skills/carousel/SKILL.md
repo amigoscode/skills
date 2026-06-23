@@ -1,5 +1,5 @@
 ---
-name: linkedin-carousel
+name: carousel
 description: "Generate branded LinkedIn carousel slides (1080x1350px PNGs), a combined PDF, beat-synced MP4s, a GIF, and platform captions for any tech topic. Use this skill when the user wants to create a LinkedIn carousel, generate carousel slides about a technology, make LinkedIn slides or posts about programming concepts, or build a carousel post for social media. Triggers on: 'carousel', 'linkedin carousel', 'create slides', 'generate carousel', 'make a carousel about', 'carousel for', 'linkedin slides', 'pull figma', 'fetch figma', 'sync figma', 'update templates'. For publishing the resulting carousel.pdf to LinkedIn, see the linkedin-poster skill."
 ---
 
@@ -36,7 +36,7 @@ to collect any values the user wants to change. Fields:
 
 **Paths.** `outputDir`, `techIconsDir`, and `figmaConfigPath`:
 
-1. **outputDir**: where carousels are saved. Default: `~/carousels`.
+1. **outputDir**: where carousels are saved. Default: `~/amigoscode-skills/carousel`.
 2. **techIconsDir**: directory of tech icon SVGs. Default: `assets/tech_icons`
    (430 icons bundled with the skill). A relative path is resolved against
    `SKILL_DIR`.
