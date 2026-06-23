@@ -31,7 +31,7 @@ Do not use for:
 One-time setup:
 
 ```bash
-cd ~/.claude/skills/linkedin-poster/scripts
+cd "${CLAUDE_PLUGIN_ROOT}/skills/linkedin-poster/scripts"
 npm install
 npx playwright install chromium
 ```
@@ -133,7 +133,7 @@ When scheduling, the minute must be `:00`, `:15`, `:30`, or `:45` — LinkedIn's
 ## Running
 
 ```bash
-npx tsx ~/.claude/skills/linkedin-poster/scripts/schedule.ts \
+npx tsx "${CLAUDE_PLUGIN_ROOT}/skills/linkedin-poster/scripts/schedule.ts" \
   --config-file /tmp/linkedin-poster.json
 ```
 
