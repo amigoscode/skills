@@ -21,11 +21,23 @@
       font-family: sans-serif;
     }
 
-    /* Top-left tech icon */
-    .tech-icon {
+    /* Top-left header row: person photo + tech icon + title, left to right */
+    .header {
       position: absolute;
       top: 30px;
       left: 50px;
+      right: 50px;
+      display: flex;
+      align-items: center;
+      gap: 22px;
+    }
+
+    /* Optional author/person photo (circular). Removed entirely when no photo. */
+    .person-photo img {
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      object-fit: cover;
     }
 
     .tech-icon img {
@@ -34,18 +46,13 @@
       object-fit: contain;
     }
 
-    /* Top-right title */
     .title {
-      position: absolute;
-      top: 32px;
-      right: 50px;
-      padding: 16.5px 0;
       font-family: 'Inter', sans-serif;
       font-weight: 900;
       font-size: 54px;
       color: #181D2F;
       text-transform: uppercase;
-      text-align: right;
+      text-align: left;
       white-space: nowrap;
     }
 
@@ -84,7 +91,7 @@
     /* Content image */
     .content {
       position: absolute;
-      top: 110px;
+      top: 140px;
       left: 48px;
       right: 0;
       bottom: 80px;
@@ -104,22 +111,31 @@
 
 <!--
   This template is filled in per run. Replace these placeholders:
-    {{TITLE}}        - topic title, ALL CAPS, kept short to fit beside the icon
-                       (e.g. "HOW DOCKER WORKS", or "VIRTUAL THREADS" for a long
-                       topic). See SKILL.md Step 4 title rules.
-    {{DIAGRAM_SRC}}  - path/filename of the generated raw diagram image
-    {{DIAGRAM_ALT}}  - alt text (the topic name)
+    {{PERSON_PHOTO}} - absolute path to the author/person photo, from
+                       config.personPhoto. If config.personPhoto is empty or the
+                       file does not exist, REMOVE the whole .person-photo div.
     {{ICON_PATH}}    - tech icon: a lobehub/devicon CDN URL, or config.logoPath
                        for generic topics. Always present, never removed.
+    {{TITLE}}        - topic title, ALL CAPS, kept short so the icon + title row
+                       fits (e.g. "HOW DOCKER WORKS", or "VIRTUAL THREADS" for a
+                       long topic). See SKILL.md Step 4 title rules.
+    {{DIAGRAM_SRC}}  - path/filename of the generated raw diagram image
+    {{DIAGRAM_ALT}}  - alt text (the topic name)
     {{LOGO_PATH}}    - brand wordmark, from config.logoPath
     {{FOOTER_TEXT}}  - footer URL/text, from config.footerText
+
+  Header order is left to right: person photo, then tech icon, then title.
 -->
 <div class="slide">
-  <div class="tech-icon">
-    <img src="{{ICON_PATH}}" alt="icon" />
+  <div class="header">
+    <div class="person-photo">
+      <img src="{{PERSON_PHOTO}}" alt="author" />
+    </div>
+    <div class="tech-icon">
+      <img src="{{ICON_PATH}}" alt="icon" />
+    </div>
+    <div class="title">{{TITLE}}</div>
   </div>
-
-  <div class="title">{{TITLE}}</div>
 
   <div class="content">
     <img src="{{DIAGRAM_SRC}}" alt="{{DIAGRAM_ALT}}" />

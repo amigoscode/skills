@@ -4,7 +4,7 @@ Current versions of all skills. Agents can compare against local versions to che
 
 | Skill | Version | Last Updated | Summary |
 |-------|---------|--------------|---------|
-| infographic | 1.0.0 | 2026-06-23 | Generate branded "HOW X WORKS" educational infographic diagrams for backend/Java topics, exported as a final PNG plus caption. |
+| infographic | 1.1.0 | 2026-06-23 | Generate branded "HOW X WORKS" educational infographic diagrams for backend/Java topics, exported as a final PNG plus caption. |
 | linkedin-poster | 1.0.0 | 2026-06-23 | Fully autonomous LinkedIn poster that publishes immediately or schedules text, carousel, or image posts via Playwright. |
 
 ## Recent Changes

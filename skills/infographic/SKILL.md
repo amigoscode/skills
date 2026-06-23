@@ -49,7 +49,8 @@ Read `SKILL_DIR/config.json`.
 **If `config.json` does NOT exist**, this is the first run. Use the Ask tool to collect branding from the user, then write `config.json`. Ask for:
 
 1. **Footer text**: the URL or text shown at the bottom-left of every infographic. Default: `www.amigoscode.com`.
-2. **Logo path**: path to an SVG or PNG wordmark shown bottom-center. Default: `assets/amigoscode-wordmark.svg` (the bundled logo). The user can point this at their own file. This logo is also used as the top-left fallback icon for topics with no specific tech icon.
+2. **Logo path**: path to an SVG or PNG wordmark shown bottom-center. Default: `assets/amigoscode-wordmark.svg` (the bundled logo). The user can point this at their own file. This logo is also used as the fallback icon for topics with no specific tech icon.
+3. **Person photo**: path to the author's photo shown at the top-left of every infographic (a circular avatar before the tech icon). Leave empty for no photo. Default: empty.
 
 Then write `SKILL_DIR/config.json`:
 
@@ -57,13 +58,14 @@ Then write `SKILL_DIR/config.json`:
 {
   "footerText": "<their footer text>",
   "logoPath": "<their logo path>",
-  "outputDir": "~/infographics"
+  "outputDir": "~/infographics",
+  "personPhoto": "<their photo path, or empty string for none>"
 }
 ```
 
 `outputDir` is where infographics are saved. Keep its default unless the user asks to change it.
 
-**If `config.json` exists**, load it and use `footerText`, `logoPath`, and `outputDir` throughout the workflow below.
+**If `config.json` exists**, load it and use `footerText`, `logoPath`, `outputDir`, and `personPhoto` throughout the workflow below.
 
 ### Step 1: Create the output directory
 
@@ -105,12 +107,19 @@ Note: Gemini may save as `.jpg` instead of `.png`. That is fine, just use whatev
 ### Step 4: Create the branded HTML
 
 Read the template from `SKILL_DIR/assets/template.html` and create a copy in the output directory, replacing the placeholders:
-- `{{TITLE}}`: the topic title, ALL CAPS. Keep it SHORT so it fits on one line next to the icon (see title rules below)
+- `{{PERSON_PHOTO}}`: the author photo (see person photo rules below)
+- `{{ICON_PATH}}`: the tech icon (see icon rules below)
+- `{{TITLE}}`: the topic title, ALL CAPS. Keep it SHORT so the icon + title row fits (see title rules below)
 - `{{DIAGRAM_SRC}}`: the raw diagram filename (relative to the HTML file, so just the filename works)
 - `{{DIAGRAM_ALT}}`: the topic name
 - `{{FOOTER_TEXT}}`: `footerText` from `config.json`
 - `{{LOGO_PATH}}`: `logoPath` from `config.json` (use the absolute path so the screenshot can resolve it)
-- `{{ICON_PATH}}`: the tech icon (see below)
+
+The header is a left-aligned row, ordered left to right: **person photo → tech icon → title**. The title is left-aligned right after the icon.
+
+Person photo rules:
+- Read `personPhoto` from `config.json`. If it is a non-empty path AND the file exists, set `{{PERSON_PHOTO}}` to its absolute path (expand a leading `~` to the home directory) so the screenshot can resolve it.
+- **If `personPhoto` is empty/missing, or the file does not exist, REMOVE the whole `<div class="person-photo">...</div>` element.** Then the row is just icon → title.
 
 Icon rules:
 - Pick the appropriate tech icon URL (lobehub or devicon) for `{{ICON_PATH}}`.
@@ -415,8 +424,7 @@ Always pass **all three** reference images via `--ref` flags to `generate-diagra
 ## HTML Template
 
 The template is at `assets/template.html`. It uses placeholders (filled in Step 4) and contains:
-- **Top-left**: Tech icon `{{ICON_PATH}}` (80px, from lobehub/devicon CDN, or the brand `logoPath` for generic topics; always present, never removed)
-- **Top-right**: Title `{{TITLE}}` in bold uppercase Inter font (right-aligned)
+- **Top-left header row** (left to right): person photo `{{PERSON_PHOTO}}` (84px circular avatar, from `config.personPhoto`, removed when empty/missing), then tech icon `{{ICON_PATH}}` (80px, from lobehub/devicon CDN, or the brand `logoPath` for generic topics; always present), then Title `{{TITLE}}` in bold uppercase Inter font (left-aligned, right after the icon)
 - **Center**: The diagram image `{{DIAGRAM_SRC}}` (`object-fit: contain`)
 - **Bottom-left**: Footer text `{{FOOTER_TEXT}}` (Epilogue font, regular weight), from `config.json`
 - **Bottom-center**: Brand wordmark `{{LOGO_PATH}}` (38px height), from `config.json`
