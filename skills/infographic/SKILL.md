@@ -137,12 +137,15 @@ Save as `<outputDir>/How [Topic] Works/How [Topic] Works.html`.
 
 ### Step 5: Screenshot with Playwright (headless)
 
-Use Playwright CLI in headless mode to capture the branded slide as a PNG. Build the `file://` URL from the absolute path of the HTML file, URL-encoding spaces as `%20`:
+Use Playwright CLI in headless mode to capture the branded slide as a PNG. Build the `file://` URL from the absolute path of the HTML file, URL-encoding spaces as `%20`.
+
+**IMPORTANT: pass `--viewport-size "1200,1581"`** so the capture matches the 1200px slide width exactly. Without it, Playwright uses a 1280px default viewport and leaves ~80px of dead space on the right, which makes the right-aligned title look like it has more padding than the left photo.
 
 ```bash
 npx playwright screenshot \
   --browser chromium \
   --full-page \
+  --viewport-size "1200,1581" \
   --wait-for-timeout 3000 \
   "file://<absolute-path-to>/How%20[Topic]%20Works/How%20[Topic]%20Works.html" \
   "<outputDir>/How [Topic] Works/How [Topic] Works.png"
