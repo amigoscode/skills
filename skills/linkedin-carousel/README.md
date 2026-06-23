@@ -69,12 +69,19 @@ On first run the skill copies [`config.example.json`](./config.example.json) to
 }
 ```
 
-Relative asset paths resolve against the skill directory, so the bundled defaults
-work out of the box. To rebrand, point the brand fields at your own files — for
-example a dedicated folder like `~/carousels/brand/` holding `logo.svg`,
-`outro-logo.svg`, and `outro-photo.png`. Every brand element is optional: leave a
-field empty to drop that element from the slide (no logo, no footer, no photo, no
-outro CTA), and any asset path that does not exist falls back to the bundled copy.
+The brand files live in the skill's own `assets/` folder so they are easy to find
+and change:
+
+- `assets/logo.svg` — round logo, top-left of cover/content slides
+- `assets/outro-logo.svg` — wordmark at the top of the outro
+- `assets/outro-photo.png` — presenter photo at the bottom of the outro
+
+To rebrand, just replace those files in place (keep the same names), or point the
+`logoPath` / `outroLogoPath` / `outroPhoto` fields at files anywhere else (absolute
+or `~`-prefixed). Relative paths resolve against the skill directory. Every brand
+element is optional: leave a field empty to drop it from the slide (no logo, no
+footer, no photo, no outro CTA), and any path that does not exist falls back to the
+bundled copy.
 
 ## Usage
 
