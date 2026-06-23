@@ -430,8 +430,8 @@ The template is at `assets/template.html`. It uses placeholders (filled in Step 
 - **Top-left**: person photo `{{PERSON_PHOTO}}` (112px circular avatar, from `config.personPhoto`, removed when empty/missing)
 - **Top-right** (right-aligned, icon then title): tech icon `{{ICON_PATH}}` (80px, from lobehub/devicon CDN, or the brand `logoPath` for generic topics; always present), then Title `{{TITLE}}` in bold uppercase Inter font
 - **Center**: The diagram image `{{DIAGRAM_SRC}}` (`object-fit: contain`)
-- **Bottom-left**: Footer text `{{FOOTER_TEXT}}` (Epilogue font, regular weight), from `config.json`
-- **Bottom-center**: Brand wordmark `{{LOGO_PATH}}` (38px height), from `config.json`
+- **Bottom-left**: Brand wordmark `{{LOGO_PATH}}` (38px height), from `config.json`
+- **Bottom-center**: Footer text `{{FOOTER_TEXT}}` (Epilogue font, regular weight), from `config.json`
 
 The bundled brand asset is `assets/amigoscode-wordmark.svg` (default `logoPath`). Point `config.json` at your own file to rebrand.
 
