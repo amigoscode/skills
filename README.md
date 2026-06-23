@@ -17,8 +17,8 @@ Skills are markdown files that give AI agents specialized knowledge and workflow
 <!-- SKILLS:START -->
 | Skill | Description |
 |-------|-------------|
-| [infographic](skills/infographic/) | Generate 'HOW X WORKS' educational infographic diagrams for Amigoscode — hand-drawn style diagrams about backend/Java... |
 | [carousel](skills/carousel/) | Generate branded LinkedIn carousel slides (1080x1350px PNGs), a combined PDF, beat-synced MP4s, a GIF, and platform... |
+| [infographic](skills/infographic/) | Generate 'HOW X WORKS' educational infographic diagrams for Amigoscode — hand-drawn style diagrams about backend/Java... |
 | [linkedin-poster](skills/linkedin-poster/) | Fully autonomous LinkedIn poster. Drives the LinkedIn web composer via Playwright/TypeScript to publish posts... |
 <!-- SKILLS:END -->
 
