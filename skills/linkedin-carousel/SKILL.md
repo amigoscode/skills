@@ -34,24 +34,45 @@ Read `SKILL_DIR/config.json`.
 `SKILL_DIR/config.example.json` to `SKILL_DIR/config.json`, then use the Ask tool
 to collect any values the user wants to change. Fields:
 
+**Paths.** `outputDir`, `techIconsDir`, and `figmaConfigPath`:
+
 1. **outputDir**: where carousels are saved. Default: `~/carousels`.
 2. **techIconsDir**: directory of tech icon SVGs. Default: `assets/tech_icons`
    (430 icons bundled with the skill). A relative path is resolved against
    `SKILL_DIR`.
 3. **figmaConfigPath**: path to the Figma template config. Default:
    `assets/figma-config.json` (bundled).
-4. **outroPhoto**: photo shown on the outro slide. Default: `assets/outro-photo.png`
-   (bundled). Point it at the user's own photo, or leave empty for no photo.
-5. **ctaLine**: closing call-to-action line appended to the LinkedIn caption.
-6. **newsletterUrl** / **newsletterLine**: optional newsletter subscribe line. If
-   `newsletterUrl` is empty, the subscribe line is omitted.
+
+**Brand (shown on the slides).** These are swappable so the carousel can be
+rebranded without touching the skill. Point them at a brand folder (e.g.
+`~/carousels/brand/`) or leave the bundled defaults:
+
+4. **footerText**: bottom-left footer/website text on the cover and content
+   slides (e.g. `www.amigoscode.com`).
+5. **logoPath**: the round brand logo (top-left of cover/content slides). Default:
+   `assets/logo.svg` (bundled).
+6. **outroPhoto**: presenter photo at the bottom of the outro slide. Default:
+   `assets/outro-photo.png`.
+7. **outroLogoPath**: the wordmark logo at the top of the outro slide. Default:
+   `assets/outro-logo.svg`.
+8. **outroCta**: the closing line on the outro slide (e.g. `Like and Follow for
+   more...`).
+
+**Caption (text post, not on the slides).**
+
+9. **ctaLine**: closing call-to-action line appended to the LinkedIn caption.
+10. **newsletterUrl** / **newsletterLine**: optional newsletter subscribe line. If
+    `newsletterUrl` is empty, the subscribe line is omitted.
 
 **If `config.json` exists**, load it and use these values throughout. Relative
-`techIconsDir`, `figmaConfigPath`, and `outroPhoto` paths are resolved against
-`SKILL_DIR`; expand a leading `~` to the home directory.
+asset paths (`techIconsDir`, `figmaConfigPath`, `logoPath`, `outroPhoto`,
+`outroLogoPath`) are resolved against `SKILL_DIR`; expand a leading `~` to the home
+directory.
 
 Every config-driven element is optional: if its `config.json` field is missing or
-empty, omit that element rather than emitting an empty value.
+empty, omit that element from the slide (the generator drops the logo, photo,
+footer, or CTA rather than emitting an empty value). Brand assets also fall back to
+the bundled `assets/` copies if a configured path does not exist.
 
 ## Figma Template Sync (optional)
 
@@ -162,13 +183,24 @@ Write a JSON config file to a temp path (e.g. `SKILL_DIR/output/carousel-config.
     }
   ],
   "outputDir": "<config.outputDir>/carousel-<topic-slug>/",
-  "assetsDir": "SKILL_DIR/assets"
+  "assetsDir": "SKILL_DIR/assets",
+  "footerText": "<config.footerText>",
+  "logoPath": "<config.logoPath, ~ and relative paths resolved to absolute>",
+  "outroLogoPath": "<config.outroLogoPath, resolved to absolute>",
+  "outroPhoto": "<config.outroPhoto, resolved to absolute>",
+  "outroCta": "<config.outroCta>"
 }
 ```
 
-`assetsDir` must point at the directory containing `outro-photo.png` and the brand
-SVGs. Use `config.outroPhoto`'s directory if the user set a custom photo; otherwise
-the bundled `SKILL_DIR/assets`.
+**Copy the brand fields straight from `config.json`** into the render config:
+`footerText`, `logoPath`, `outroLogoPath`, `outroPhoto`, and `outroCta`. Resolve
+each asset path to absolute first (expand a leading `~`; resolve a relative path
+against `SKILL_DIR`). The generator falls back to the bundled `assets/` copy if a
+path does not exist, and omits any element whose value is empty.
+
+`assetsDir` stays pointed at the bundled `SKILL_DIR/assets` (it provides the swipe
+icon, arrow, and the fallback brand files). The configured `logoPath` /
+`outroLogoPath` / `outroPhoto` take precedence over the bundled copies.
 
 If you build the config with embedded icons via `build-config.py`, set the icons
 directory first so it reads from the configured location:
@@ -332,125 +364,13 @@ Tell the user:
 
 ## Title Format Reference
 
-### Token Mode (PREFERRED for code/queries — Shiki-style syntax highlighting)
+Each content slide's `title` supports **command mode** (`{ prompt, cmd, arg }`),
+**token mode** (`{ tokens: [{ type, text }] }`, Shiki-style syntax highlighting —
+PREFER this for any code/queries/commands), and **text mode** (`{ text }`). Slides
+can also use **comparison mode** (`type: "comparison"`) for BAD vs GOOD code.
 
-Use an array of `{ type, text }` objects. Each token gets a colored span.
-
-Available token types and colors (One Dark Pro theme):
-- `keyword` — purple #c678dd (SELECT, FROM, WHERE, function, return, const, if)
-- `function` — blue #61afef (function names, method calls)
-- `string` — green #98c379 (string literals, quoted values)
-- `number` — orange #d19a66 (numeric literals)
-- `operator` — cyan #56b6c2 (=, >, <, +, -, *, AND, OR)
-- `variable` — red #e06c75 (variable names, parameters)
-- `type` — yellow #e5c07b (type names, class names)
-- `comment` — gray #7f848e italic (comments)
-- `punctuation` — light gray #abb2bf (brackets, commas, semicolons)
-- `property` — blue #61afef (object properties, column names)
-- `prompt` — brand purple #9a53ff ($ prompt symbol)
-- `cmd` — light purple #c4b5fd (command names)
-- `arg` — white (arguments)
-- `plain` — white, no span wrapper (spaces, plain text)
-
-SQL example:
-
-```json
-{
-  "tokens": [
-    { "type": "keyword", "text": "SELECT" },
-    { "type": "plain", "text": " " },
-    { "type": "operator", "text": "*" },
-    { "type": "plain", "text": " " },
-    { "type": "keyword", "text": "FROM" },
-    { "type": "plain", "text": " " },
-    { "type": "property", "text": "users" }
-  ]
-}
-```
-
-CLI command example:
-
-```json
-{
-  "tokens": [
-    { "type": "prompt", "text": "$" },
-    { "type": "plain", "text": " " },
-    { "type": "cmd", "text": "docker" },
-    { "type": "plain", "text": " " },
-    { "type": "arg", "text": "build" },
-    { "type": "plain", "text": " " },
-    { "type": "string", "text": "." }
-  ]
-}
-```
-
-JavaScript example:
-
-```json
-{
-  "tokens": [
-    { "type": "keyword", "text": "const" },
-    { "type": "plain", "text": " [" },
-    { "type": "variable", "text": "state" },
-    { "type": "plain", "text": "] = " },
-    { "type": "function", "text": "useState" },
-    { "type": "punctuation", "text": "()" }
-  ]
-}
-```
-
-### Command Mode (shorthand for CLI tools)
-
-```json
-{ "prompt": "$", "cmd": "docker", "arg": "build" }
-```
-
-### Text Mode (plain concepts with no code syntax)
-
-```json
-{ "text": "Strategy Pattern" }
-```
-
-### Comparison Mode (BAD vs GOOD code — for "mistakes" carousels)
-
-Use `"type": "comparison"` on the slide to render a two-block layout with red BAD
-and green GOOD code. Both `bad` and `good` accept tokens or plain text.
-
-```json
-{
-  "type": "comparison",
-  "title": "String Comparison",
-  "bad": {
-    "tokens": [
-      { "type": "keyword", "text": "if" },
-      { "type": "plain", "text": " (" },
-      { "type": "variable", "text": "name" },
-      { "type": "plain", "text": " " },
-      { "type": "operator", "text": "==" },
-      { "type": "plain", "text": " " },
-      { "type": "string", "text": "\"John\"" },
-      { "type": "punctuation", "text": ")" }
-    ]
-  },
-  "good": {
-    "tokens": [
-      { "type": "keyword", "text": "if" },
-      { "type": "plain", "text": " (" },
-      { "type": "variable", "text": "name" },
-      { "type": "punctuation", "text": "." },
-      { "type": "function", "text": "equals" },
-      { "type": "punctuation", "text": "(" },
-      { "type": "string", "text": "\"John\"" },
-      { "type": "punctuation", "text": "))" }
-    ]
-  }
-}
-```
-
-Use comparison mode for "10 Java Mistakes", "Python Anti-Patterns", "JavaScript Code
-Smells", "SQL: Wrong vs Right". Keep code SHORT (1-2 lines, ~30 chars wide; the font
-is 36px so long lines wrap).
-
+**Read [`references/title-formats.md`](references/title-formats.md)** for the full
+token-type color table and worked JSON examples (SQL, CLI, JavaScript, comparison).
 ## Content Guidelines
 
 - Descriptions: educational, LinkedIn-appropriate, 40-60 words.

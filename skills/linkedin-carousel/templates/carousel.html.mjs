@@ -13,8 +13,10 @@ import { renderOutro } from './slides/outro.mjs';
  * @param {string}   config.logoSvg        - Inline SVG for the Amigoscode logo mark
  * @param {string}   config.swipeIconSvg   - Inline SVG for the swipe indicator
  * @param {string}   config.arrowSvg       - Inline SVG for the navigation arrow
- * @param {string}   config.outroLogoSvg   - Inline SVG for the full Amigoscode wordmark
- * @param {string}   config.photoPath      - Absolute file:// path to the presenter photo
+ * @param {string}   config.outroLogoSvg   - Inline SVG for the wordmark (omitted if empty)
+ * @param {string}   config.photoPath      - Absolute file:// path to the presenter photo (omitted if empty)
+ * @param {string}   config.footerText     - Bottom-left footer/website text (omitted if empty)
+ * @param {string}   config.outroCta       - Closing call-to-action text (omitted if empty)
  * @returns {string} A self-contained HTML document
  */
 export function buildCarouselHtml(config) {
@@ -27,9 +29,11 @@ export function buildCarouselHtml(config) {
     arrowSvg,
     outroLogoSvg,
     photoPath,
+    footerText,
+    outroCta,
   } = config;
 
-  const coverHtml = renderCover({ coverTitle, techIconSvg, logoSvg, swipeIconSvg });
+  const coverHtml = renderCover({ coverTitle, techIconSvg, logoSvg, swipeIconSvg, footerText });
 
   const contentHtml = contentSlides
     .map((slide, index) => {
@@ -41,6 +45,7 @@ export function buildCarouselHtml(config) {
           good: slide.good,
           logoSvg,
           arrowSvg,
+          footerText,
         });
       }
       return renderContent({
@@ -49,12 +54,13 @@ export function buildCarouselHtml(config) {
         description: slide.description,
         logoSvg,
         arrowSvg,
+        footerText,
         iconSvg: slide.iconSvg || '',
       });
     })
     .join('\n');
 
-  const outroHtml = renderOutro({ outroLogoSvg, photoPath });
+  const outroHtml = renderOutro({ outroLogoSvg, photoPath, outroCta });
 
   return `<!DOCTYPE html>
 <html lang="en">

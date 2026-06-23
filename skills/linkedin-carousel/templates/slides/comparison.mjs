@@ -6,11 +6,12 @@
  * @param {string} options.title       - Short mistake title (e.g., "String Comparison")
  * @param {Object} options.bad         - Bad code: { tokens: [{type, text}] } or { text: "..." }
  * @param {Object} options.good        - Good code: { tokens: [{type, text}] } or { text: "..." }
- * @param {string} options.logoSvg     - Amigoscode logo SVG
+ * @param {string} options.logoSvg     - Brand logo SVG (omitted if empty)
  * @param {string} options.arrowSvg    - Arrow SVG
+ * @param {string} options.footerText  - Bottom-left footer/website text (omitted if empty)
  * @returns {string} HTML markup
  */
-export function renderComparison({ pageNumber, title, bad, good, logoSvg, arrowSvg }) {
+export function renderComparison({ pageNumber, title, bad, good, logoSvg, arrowSvg, footerText }) {
   function renderTokens(obj) {
     if (obj.tokens) {
       return obj.tokens
@@ -24,9 +25,12 @@ export function renderComparison({ pageNumber, title, bad, good, logoSvg, arrowS
     return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
+  const logoBlock = logoSvg ? `<div class="logo">${logoSvg}</div>` : '';
+  const footerBlock = footerText ? `<div class="website">${footerText}</div>` : '';
+
   return `
 <div class="slide">
-  <div class="logo">${logoSvg}</div>
+  ${logoBlock}
   <div class="page-number">${pageNumber}</div>
   <div class="compare-body">
     <div class="compare-title">${title}</div>
@@ -39,7 +43,7 @@ export function renderComparison({ pageNumber, title, bad, good, logoSvg, arrowS
       <pre class="compare-code">${renderTokens(good)}</pre>
     </div>
   </div>
-  <div class="website">www.amigoscode.com</div>
+  ${footerBlock}
   <div class="arrow">${arrowSvg}</div>
 </div>`;
 }

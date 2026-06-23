@@ -15,6 +15,7 @@
 
 # Generated output
 **/output/
+/carousels/
 
 # OS / editor cruft
 .DS_Store

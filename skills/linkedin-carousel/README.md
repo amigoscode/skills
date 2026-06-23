@@ -54,16 +54,27 @@ On first run the skill copies [`config.example.json`](./config.example.json) to
   "outputDir": "~/carousels",              // where carousels are saved
   "techIconsDir": "assets/tech_icons",     // icon set (relative paths resolve to the skill dir)
   "figmaConfigPath": "assets/figma-config.json",
-  "outroPhoto": "assets/outro-photo.png",  // outro slide photo; empty for none
+
+  // Brand (shown on the slides) — swap without touching the skill
+  "footerText": "www.yourdomain.com",      // bottom-left footer on cover/content slides
+  "logoPath": "assets/logo.svg",           // round logo, top-left of cover/content slides
+  "outroPhoto": "assets/outro-photo.png",  // presenter photo at the bottom of the outro
+  "outroLogoPath": "assets/outro-logo.svg",// wordmark at the top of the outro
+  "outroCta": "Like and Follow for more...", // closing line on the outro slide
+
+  // Caption (text post, not on the slides)
   "ctaLine": "Follow for practical lessons...",
   "newsletterUrl": "",                      // empty omits the subscribe line
   "newsletterLine": "One backend lesson in your inbox every week → {{NEWSLETTER_URL}}"
 }
 ```
 
-Relative `techIconsDir`, `figmaConfigPath`, and `outroPhoto` paths resolve against
-the skill directory, so the bundled defaults work out of the box. Point them at your
-own files to rebrand.
+Relative asset paths resolve against the skill directory, so the bundled defaults
+work out of the box. To rebrand, point the brand fields at your own files — for
+example a dedicated folder like `~/carousels/brand/` holding `logo.svg`,
+`outro-logo.svg`, and `outro-photo.png`. Every brand element is optional: leave a
+field empty to drop that element from the slide (no logo, no footer, no photo, no
+outro CTA), and any asset path that does not exist falls back to the bundled copy.
 
 ## Usage
 

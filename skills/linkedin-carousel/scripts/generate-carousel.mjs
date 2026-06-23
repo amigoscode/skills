@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { chromium } from 'playwright';
@@ -66,6 +67,32 @@ function readAsset(assetsDir, filename) {
 }
 
 /**
+ * Expands a leading ~ to the home directory.
+ */
+function expandHome(p) {
+  return p && p.startsWith('~') ? path.join(os.homedir(), p.slice(1)) : p;
+}
+
+/**
+ * Resolves a brand asset to an absolute path. Prefers an explicit config path
+ * (with ~ expansion); falls back to a bundled file in assetsDir. Returns null
+ * when neither exists, so the caller can omit the element.
+ *
+ * @param {string} [cfgPath]    - Path from config.json (may be empty/undefined)
+ * @param {string} assetsDir    - Bundled assets directory
+ * @param {string} fallbackName - Bundled filename to fall back to
+ * @returns {string|null} Absolute path, or null if nothing is found
+ */
+function resolveAsset(cfgPath, assetsDir, fallbackName) {
+  if (cfgPath) {
+    const abs = expandHome(cfgPath);
+    if (fs.existsSync(abs)) return abs;
+  }
+  const fallback = path.join(assetsDir, fallbackName);
+  return fs.existsSync(fallback) ? fallback : null;
+}
+
+/**
  * Main entry point. Reads config, builds HTML, launches Playwright,
  * screenshots every slide, and prints a JSON result to stdout.
  */
@@ -73,14 +100,32 @@ async function main() {
   const configPath = parseArgs();
   const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
 
-  const { coverTitle, techIconSvg, contentSlides, outputDir, assetsDir } = config;
+  const {
+    coverTitle,
+    techIconSvg,
+    contentSlides,
+    outputDir,
+    assetsDir,
+    footerText = '',
+    outroCta = '',
+    logoPath,
+    outroLogoPath,
+    photoPath: photoPathCfg,
+    outroPhoto,
+  } = config;
 
-  // Load SVG assets from disk
-  const logoSvg = readAsset(assetsDir, 'logo.svg');
+  // Structural UI chrome stays bundled with the skill.
   const swipeIconSvg = readAsset(assetsDir, 'swipe-icon.svg');
   const arrowSvg = readAsset(assetsDir, 'arrow-vector.svg');
-  const outroLogoSvg = readAsset(assetsDir, 'outro-logo.svg');
-  const photoPath = `file://${path.join(assetsDir, 'outro-photo.png')}`;
+
+  // Brand assets: config path first, bundled fallback, omit if missing.
+  const logoFile = resolveAsset(logoPath, assetsDir, 'logo.svg');
+  const outroLogoFile = resolveAsset(outroLogoPath, assetsDir, 'outro-logo.svg');
+  const photoFile = resolveAsset(photoPathCfg || outroPhoto, assetsDir, 'outro-photo.png');
+
+  const logoSvg = logoFile ? fs.readFileSync(logoFile, 'utf-8') : '';
+  const outroLogoSvg = outroLogoFile ? fs.readFileSync(outroLogoFile, 'utf-8') : '';
+  const photoPath = photoFile ? `file://${photoFile}` : '';
 
   // Build the full HTML document
   const html = buildCarouselHtml({
@@ -92,6 +137,8 @@ async function main() {
     arrowSvg,
     outroLogoSvg,
     photoPath,
+    footerText,
+    outroCta,
   });
 
   // Ensure the output directory exists
