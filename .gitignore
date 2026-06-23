@@ -1,0 +1,19 @@
+# Secrets — never commit
+**/.env
+
+# Per-user config created on first run (keep the .example files)
+**/config.json
+**/*.local.json
+
+# Saved LinkedIn session / reused browser profiles
+**/state/
+
+# Dependencies
+**/node_modules/
+
+# Generated output
+**/output/
+
+# OS / editor cruft
+.DS_Store
+*.log

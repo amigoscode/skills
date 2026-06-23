@@ -1,0 +1,14 @@
+# Saved LinkedIn session and any reused browser profiles — never commit
+scripts/state/
+state/
+
+# Dependencies
+node_modules/
+
+# Local per-run configs (keep config.example.json tracked)
+*.local.json
+config.json
+
+# OS / editor cruft
+.DS_Store
+*.log

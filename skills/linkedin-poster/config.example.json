@@ -1,0 +1,27 @@
+{
+  "headless": false,
+  "keepOpen": false,
+  "posts": [
+    {
+      "postDir": "~/posts/launch-day",
+      "postFile": "linkedin-post.txt",
+      "media": {
+        "type": "images",
+        "paths": ["~/posts/launch-day/card.png"],
+        "altText": "Describe the image for accessibility here"
+      }
+    },
+    {
+      "postDir": "~/posts/spring-security",
+      "media": {
+        "type": "pdf",
+        "path": "~/posts/spring-security/carousel.pdf",
+        "title": "How Spring Security Works"
+      },
+      "schedule": "2026-05-12T08:30"
+    },
+    {
+      "postDir": "~/posts/text-only"
+    }
+  ]
+}

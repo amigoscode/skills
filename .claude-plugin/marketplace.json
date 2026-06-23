@@ -1,0 +1,23 @@
+{
+  "name": "amigoscode",
+  "owner": {
+    "name": "Amigoscode",
+    "url": "https://amigoscode.com"
+  },
+  "metadata": {
+    "description": "Amigoscode marketplace — content and developer tools for educators and engineers.",
+    "version": "1.0.0",
+    "repository": "https://github.com/amigoscode/amigoscode-plugin"
+  },
+  "plugins": [
+    {
+      "name": "amigoscode",
+      "source": "./",
+      "description": "Branded educational infographics (HOW X WORKS diagrams) and an autonomous LinkedIn poster.",
+      "skills": [
+        "./skills/infographic",
+        "./skills/linkedin-poster"
+      ]
+    }
+  ]
+}
