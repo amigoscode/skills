@@ -1,0 +1,23 @@
+# Per-user config (created on first run via onboarding; keep config.example.json)
+config.json
+*.local.json
+
+# Dependencies
+node_modules/
+scripts/node_modules/
+
+# Python bytecode
+__pycache__/
+*.pyc
+
+# Generated carousels and temp render files
+/output/
+_carousel-temp.html
+
+# Accidental literal "~" capture dirs
+/~/
+scripts/~/
+
+# OS / editor cruft
+.DS_Store
+*.log

@@ -1,7 +1,7 @@
 {
   "name": "amigoscode",
   "version": "1.0.0",
-  "description": "Amigoscode content tools — branded educational infographics and an autonomous LinkedIn poster.",
+  "description": "Amigoscode content tools — branded educational infographics, LinkedIn carousels, and an autonomous LinkedIn poster.",
   "author": {
     "name": "Amigoscode",
     "url": "https://amigoscode.com"
@@ -9,5 +9,5 @@
   "homepage": "https://amigoscode.com",
   "repository": "https://github.com/amigoscode/amigoscode-plugin",
   "license": "MIT",
-  "keywords": ["infographic", "linkedin", "content", "social-media", "education", "amigoscode"]
+  "keywords": ["infographic", "linkedin", "carousel", "content", "social-media", "education", "amigoscode"]
 }
