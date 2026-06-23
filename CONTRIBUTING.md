@@ -4,7 +4,7 @@ Thanks for your interest in contributing to Amigoscode Skills! This guide will h
 
 ## Requesting a Skill
 
-You can also suggest new skills by [opening a skill request](https://github.com/amigoscode/amigoscode-plugin/issues/new?template=skill-request.yml).
+You can also suggest new skills by [opening a skill request](https://github.com/amigoscode/skills/issues/new?template=skill-request.yml).
 
 ## Adding a New Skill
 

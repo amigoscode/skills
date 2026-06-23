@@ -6,7 +6,7 @@ These skills focus on turning backend, Java, and Spring topics into polished, br
 
 **Contributions welcome!** Found a way to improve a skill or have a new one to add? [Open a PR](#contributing).
 
-Run into a problem or have a question? [Open an issue](https://github.com/amigoscode/amigoscode-plugin/issues) and we are happy to help.
+Run into a problem or have a question? [Open an issue](https://github.com/amigoscode/skills/issues) and we are happy to help.
 
 ## What are Skills?
 
@@ -30,13 +30,13 @@ Use [npx skills](https://github.com/vercel-labs/skills) to install skills direct
 
 ```bash
 # Install all skills
-npx skills add amigoscode/amigoscode-plugin
+npx skills add amigoscode/skills
 
 # Install specific skills
-npx skills add amigoscode/amigoscode-plugin --skill infographic linkedin-carousel linkedin-poster
+npx skills add amigoscode/skills --skill infographic linkedin-carousel linkedin-poster
 
 # List available skills
-npx skills add amigoscode/amigoscode-plugin --list
+npx skills add amigoscode/skills --list
 ```
 
 This automatically installs to your `.agents/skills/` directory (and symlinks into `.claude/skills/` for Claude Code compatibility).
@@ -47,7 +47,7 @@ Install via Claude Code's built-in plugin system:
 
 ```bash
 # Add the marketplace
-/plugin marketplace add amigoscode/amigoscode-plugin
+/plugin marketplace add amigoscode/skills
 
 # Install the Amigoscode skills
 /plugin install amigoscode
@@ -60,8 +60,8 @@ Then the skills resolve as `amigoscode:infographic`, `amigoscode:linkedin-carous
 Clone the entire repo and copy the skills folder:
 
 ```bash
-git clone https://github.com/amigoscode/amigoscode-plugin.git
-cp -r amigoscode-plugin/skills/* .agents/skills/
+git clone https://github.com/amigoscode/skills.git amigoscode-skills
+cp -r amigoscode-skills/skills/* .agents/skills/
 ```
 
 ### Option 4: Git Submodule
@@ -69,10 +69,10 @@ cp -r amigoscode-plugin/skills/* .agents/skills/
 Add as a submodule for easy updates:
 
 ```bash
-git submodule add https://github.com/amigoscode/amigoscode-plugin.git .agents/amigoscode-plugin
+git submodule add https://github.com/amigoscode/skills.git .agents/amigoscode-skills
 ```
 
-Then reference skills from `.agents/amigoscode-plugin/skills/`.
+Then reference skills from `.agents/amigoscode-skills/skills/`.
 
 ### Option 5: Fork and Customize
 

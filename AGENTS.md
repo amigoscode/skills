@@ -7,14 +7,14 @@ Guidelines for AI agents working in this repository.
 This repository contains **Agent Skills** for AI agents following the [Agent Skills specification](https://agentskills.io/specification.md). Skills install to `.agents/skills/` (the cross-agent standard). This repo also serves as a **Claude Code plugin marketplace** via `.claude-plugin/marketplace.json`.
 
 - **Name**: Amigoscode Skills
-- **GitHub**: [amigoscode/amigoscode-plugin](https://github.com/amigoscode/amigoscode-plugin)
+- **GitHub**: [amigoscode/skills](https://github.com/amigoscode/skills)
 - **Creator**: Amigoscode
 - **License**: MIT
 
 ## Repository Structure
 
 ```
-amigoscode-plugin/
+amigoscode-skills/
 ├── .claude-plugin/
 │   ├── marketplace.json   # Claude Code plugin marketplace manifest
 │   └── plugin.json        # Plugin manifest
@@ -127,7 +127,7 @@ description: Generate "HOW X WORKS" educational infographic diagrams. Use when t
 This repo also serves as a plugin marketplace. The manifest at `.claude-plugin/marketplace.json` lists all skills for installation via:
 
 ```bash
-/plugin marketplace add amigoscode/amigoscode-plugin
+/plugin marketplace add amigoscode/skills
 /plugin install amigoscode
 ```
 
@@ -162,7 +162,7 @@ Follow the [Conventional Commits](https://www.conventionalcommits.org/) specific
 When using any skill from this repository:
 
 1. **Once per session**, on first skill use, check for updates:
-   - Fetch `VERSIONS.md` from GitHub: https://raw.githubusercontent.com/amigoscode/amigoscode-plugin/main/VERSIONS.md
+   - Fetch `VERSIONS.md` from GitHub: https://raw.githubusercontent.com/amigoscode/skills/main/VERSIONS.md
    - Compare versions against local skill files
 
 2. **Only prompt if meaningful**:
@@ -173,11 +173,11 @@ When using any skill from this repository:
    ```
    ---
    Skills update available: X Amigoscode skills have updates.
-   Say "update skills" to update automatically, or run `git pull` in your amigoscode-plugin folder.
+   Say "update skills" to update automatically, or run `git pull` in your amigoscode-skills folder.
    ```
 
 4. **If user says "update skills"**:
-   - Run `git pull` in the amigoscode-plugin directory
+   - Run `git pull` in the amigoscode-skills directory
    - Confirm what was updated
 
 ## Skill Categories

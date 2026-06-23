@@ -7,7 +7,7 @@
   "metadata": {
     "description": "Amigoscode marketplace — content and developer tools for educators and engineers.",
     "version": "1.0.0",
-    "repository": "https://github.com/amigoscode/amigoscode-plugin"
+    "repository": "https://github.com/amigoscode/skills"
   },
   "plugins": [
     {
