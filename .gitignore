@@ -1,5 +1,7 @@
 # Secrets — never commit
 **/.env
+**/.env.*
+!**/.env.example
 
 # Per-user config created on first run (keep the .example files)
 **/config.json
@@ -16,4 +18,16 @@
 
 # OS / editor cruft
 .DS_Store
+**/.DS_Store
 *.log
+
+# macOS / iCloud duplicate files
+* 2.*
+* 2/
+
+# Editor
+*.swp
+*.swo
+*~
+.idea/
+.vscode/

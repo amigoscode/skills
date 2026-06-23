@@ -1,34 +1,46 @@
-# Amigoscode Plugin
+# Amigoscode Skills for AI Agents
 
-A [Claude Code](https://claude.com/claude-code) plugin bundling Amigoscode's content tools. Install once and get both skills under the `amigoscode:` namespace.
+A collection of AI agent skills from [Amigoscode](https://amigoscode.com) for creating branded technical content. Built for developers and educators who want AI coding agents to help produce educational infographics and publish to LinkedIn. Works with Claude Code, OpenAI Codex, Cursor, Windsurf, and any agent that supports the [Agent Skills spec](https://agentskills.io).
 
-## Skills
+These skills focus on turning backend, Java, and Spring topics into polished, branded visuals and social posts. Generate a "HOW X WORKS" diagram for a concept, then publish or schedule it on LinkedIn, all from your agent.
 
-| Skill | What it does |
-|---|---|
-| `amigoscode:infographic` | Generates branded "HOW X WORKS" educational infographics (hand-drawn style diagrams) about backend/Java topics, composited onto a branded template and exported as a final PNG, plus a ready-to-post caption. |
-| `amigoscode:linkedin-poster` | Fully autonomous LinkedIn poster. Publishes immediately or schedules posts (text, PDF carousel, or image) by driving the LinkedIn web composer with Playwright. |
+**Contributions welcome!** Found a way to improve a skill or have a new one to add? [Open a PR](#contributing).
+
+Run into a problem or have a question? [Open an issue](https://github.com/amigoscode/amigoscode-plugin/issues) and we are happy to help.
+
+## What are Skills?
+
+Skills are markdown files that give AI agents specialized knowledge and workflows for specific tasks. When you add these to your project, your agent can recognize when you are working on a content task and apply the right templates, branding, and best practices.
+
+## Available Skills
+
+<!-- SKILLS:START -->
+| Skill | Description |
+|-------|-------------|
+| [infographic](skills/infographic/) | Generate 'HOW X WORKS' educational infographic diagrams for Amigoscode — hand-drawn style diagrams about backend/Java... |
+| [linkedin-poster](skills/linkedin-poster/) | Fully autonomous LinkedIn poster. Drives the LinkedIn web composer via Playwright/TypeScript to publish posts... |
+<!-- SKILLS:END -->
 
 ## Installation
 
-### Option 1: CLI install (recommended)
+### Option 1: CLI Install (Recommended)
 
-Use [npx skills](https://github.com/vercel-labs/skills) to install the skills directly:
+Use [npx skills](https://github.com/vercel-labs/skills) to install skills directly:
 
 ```bash
-# Install both skills
+# Install all skills
 npx skills add amigoscode/amigoscode-plugin
 
-# Install just one
-npx skills add amigoscode/amigoscode-plugin --skill infographic
+# Install specific skills
+npx skills add amigoscode/amigoscode-plugin --skill infographic linkedin-poster
 
-# List what is available
+# List available skills
 npx skills add amigoscode/amigoscode-plugin --list
 ```
 
-This installs to your `.agents/skills/` directory and symlinks into `.claude/skills/` for Claude Code compatibility. One command, no marketplace step.
+This automatically installs to your `.agents/skills/` directory (and symlinks into `.claude/skills/` for Claude Code compatibility).
 
-### Option 2: Claude Code plugin
+### Option 2: Claude Code Plugin
 
 Install via Claude Code's built-in plugin system:
 
@@ -36,20 +48,36 @@ Install via Claude Code's built-in plugin system:
 # Add the marketplace
 /plugin marketplace add amigoscode/amigoscode-plugin
 
-# Install the plugin
+# Install the Amigoscode skills
 /plugin install amigoscode
 ```
 
 Then the skills resolve as `amigoscode:infographic` and `amigoscode:linkedin-poster`.
 
-### Option 3: Clone and copy
+### Option 3: Clone and Copy
+
+Clone the entire repo and copy the skills folder:
 
 ```bash
 git clone https://github.com/amigoscode/amigoscode-plugin.git
-cp -r amigoscode-plugin/skills/* ~/.claude/skills/
+cp -r amigoscode-plugin/skills/* .agents/skills/
 ```
 
-Once installed, the skills activate automatically based on what you ask for, or you can invoke them directly (e.g. `/amigoscode:infographic`).
+### Option 4: Git Submodule
+
+Add as a submodule for easy updates:
+
+```bash
+git submodule add https://github.com/amigoscode/amigoscode-plugin.git .agents/amigoscode-plugin
+```
+
+Then reference skills from `.agents/amigoscode-plugin/skills/`.
+
+### Option 5: Fork and Customize
+
+1. Fork this repository
+2. Customize skills for your specific needs
+3. Clone your fork into your projects
 
 ## Per-skill setup
 
@@ -60,18 +88,37 @@ Each skill has its own dependencies and one-time setup. See the skill READMEs:
 
 Secrets (`.env`) and personal config (`config.json`, saved LinkedIn sessions) are gitignored and never bundled. Copy the `.example` files and fill in your own.
 
-## Layout
+## Usage
+
+Once installed, just ask your agent to help with content tasks:
 
 ```
-amigoscode-plugin/
-├── .claude-plugin/
-│   ├── plugin.json         # plugin manifest (name: amigoscode)
-│   └── marketplace.json    # marketplace listing
-└── skills/
-    ├── infographic/
-    └── linkedin-poster/
+"Create an infographic about how Kafka works"
+→ Uses infographic skill
+
+"Make a HOW X WORKS diagram for Spring Boot"
+→ Uses infographic skill
+
+"Post this on LinkedIn now"
+→ Uses linkedin-poster skill
+
+"Schedule this carousel on LinkedIn for tomorrow morning"
+→ Uses linkedin-poster skill
 ```
+
+You can also invoke skills directly:
+
+```
+/infographic
+/linkedin-poster
+```
+
+## Contributing
+
+Found a way to improve a skill? Have a new skill to suggest? PRs and issues welcome!
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on adding or improving skills.
 
 ## License
 
-MIT. See [LICENSE](./LICENSE).
+[MIT](LICENSE) - Use these however you want.

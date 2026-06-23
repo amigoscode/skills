@@ -13,6 +13,7 @@
     {
       "name": "amigoscode",
       "source": "./",
+      "strict": false,
       "description": "Branded educational infographics (HOW X WORKS diagrams) and an autonomous LinkedIn poster.",
       "skills": [
         "./skills/infographic",
