@@ -37,7 +37,6 @@ HANDLE        = config.get("handle", "@yourhandle")
 LINES         = config.get("lines", ["Quote goes here."])
 OUTPUT_DIR    = os.path.expanduser(config.get("outputDir", "~/amigoscode-skills/x-card"))
 CAPTION       = config.get("caption", "")
-FIRST_COMMENT = config.get("firstComment", "")
 HASHTAGS      = config.get("hashtags", "")
 RETWEETS      = config.get("retweets", "306")
 LIKES         = config.get("likes", "3.1K")
@@ -174,12 +173,6 @@ if CAPTION:
         f.write(CAPTION)
         if HASHTAGS:
             f.write(f"\n\n{HASHTAGS.lower()}")
-
-# Save first comment in its own file so the post body stays clean for copy-paste
-if FIRST_COMMENT:
-    first_comment_path = os.path.join(OUTPUT_DIR, "first-comment.txt")
-    with open(first_comment_path, "w") as f:
-        f.write(FIRST_COMMENT)
 
 # Output result as JSON
 result = {

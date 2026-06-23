@@ -51,8 +51,7 @@ Each card goes into a topic folder under `outputDir`:
 ```
 <outputDir>/<topic-slug>/
 ├── x-card.png          # the X-style quote card
-├── linkedin-post.txt   # long-form caption + hashtags
-└── first-comment.txt   # the first comment (usually a link), if provided
+└── linkedin-post.txt   # long-form caption + hashtags
 ```
 
 ## Inputs
@@ -64,7 +63,6 @@ Collect from the user or conversation:
 | `lines` | The X card body — a short, punchy quote (the visual hook). Each string is ONE rendered line (no auto-wrapping); use `""` for a blank line between paragraphs. 5-10 lines max. |
 | `caption` | The long-form LinkedIn post, written with the senior-engineer-mentor prompt below. |
 | `hashtags` | Hashtags for the post (e.g. `#AI #SoftwareDevelopment`). |
-| `firstComment` | First-comment text (usually a link). |
 | `topicSlug` | Kebab-case topic for the output folder (e.g. `ai-training-gap`). |
 
 `name`, `handle`, `profilePhoto`, `retweets`, and `likes` come from `config.json`.
@@ -80,7 +78,6 @@ Collect from the user or conversation:
   "lines": ["Line one", "", "Line two"],
   "caption": "Full post text here...",
   "hashtags": "#AI #SoftwareDevelopment",
-  "firstComment": "Learn more at amigoscode.com",
   "profilePhoto": "<config.profilePhoto, resolved to absolute>",
   "name": "<config.name>",
   "handle": "<config.handle>",

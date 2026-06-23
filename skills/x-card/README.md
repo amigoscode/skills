@@ -68,7 +68,6 @@ Each run writes to `<outputDir>/<topic-slug>/`:
 
 - `x-card.png` — the quote card
 - `linkedin-post.txt` — long-form caption + hashtags
-- `first-comment.txt` — the first comment (usually a link), if provided
 
 ## Pairs with linkedin-poster
 
