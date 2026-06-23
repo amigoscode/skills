@@ -11,14 +11,43 @@ A [Claude Code](https://claude.com/claude-code) plugin bundling Amigoscode's con
 
 ## Installation
 
-Once you push it to GitHub (e.g. `amigoscode/amigoscode-plugin`), add the marketplace and install the plugin:
+### Option 1: CLI install (recommended)
 
+Use [npx skills](https://github.com/vercel-labs/skills) to install the skills directly:
+
+```bash
+# Install both skills
+npx skills add amigoscode/amigoscode-plugin
+
+# Install just one
+npx skills add amigoscode/amigoscode-plugin --skill infographic
+
+# List what is available
+npx skills add amigoscode/amigoscode-plugin --list
 ```
+
+This installs to your `.agents/skills/` directory and symlinks into `.claude/skills/` for Claude Code compatibility. One command, no marketplace step.
+
+### Option 2: Claude Code plugin
+
+Install via Claude Code's built-in plugin system:
+
+```bash
+# Add the marketplace
 /plugin marketplace add amigoscode/amigoscode-plugin
-/plugin install amigoscode@amigoscode
+
+# Install the plugin
+/plugin install amigoscode
 ```
 
 Then the skills resolve as `amigoscode:infographic` and `amigoscode:linkedin-poster`.
+
+### Option 3: Clone and copy
+
+```bash
+git clone https://github.com/amigoscode/amigoscode-plugin.git
+cp -r amigoscode-plugin/skills/* ~/.claude/skills/
+```
 
 Once installed, the skills activate automatically based on what you ask for, or you can invoke them directly (e.g. `/amigoscode:infographic`).
 
