@@ -130,11 +130,15 @@
                        long topic). See SKILL.md Step 4 title rules.
     {{DIAGRAM_SRC}}  - path/filename of the generated raw diagram image
     {{DIAGRAM_ALT}}  - alt text (the topic name)
-    {{LOGO_PATH}}    - brand wordmark, from config.logoPath
-    {{FOOTER_TEXT}}  - footer URL/text, from config.footerText
+    {{LOGO_PATH}}    - brand wordmark (bottom-left), from config.logoPath. If
+                       config.logoPath is empty/missing, REMOVE the .logo div.
+    {{FOOTER_TEXT}}  - footer URL/text (bottom-center), from config.footerText.
+                       If empty/missing, REMOVE the .bottom-url span.
 
+  Every config-driven element is optional: drop it when its config value is
+  empty/missing rather than leaving an empty value or a raw {{PLACEHOLDER}}.
   Layout: person photo sits top-left. The tech icon + title sit top-right,
-  right-aligned (icon then title).
+  right-aligned (icon then title). Wordmark bottom-left, website centered.
 -->
 <div class="slide">
   <div class="person-photo">

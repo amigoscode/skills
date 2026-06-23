@@ -112,8 +112,10 @@ Read the template from `SKILL_DIR/assets/template.html` and create a copy in the
 - `{{TITLE}}`: the topic title, ALL CAPS. Keep it SHORT so the icon + title row fits (see title rules below)
 - `{{DIAGRAM_SRC}}`: the raw diagram filename (relative to the HTML file, so just the filename works)
 - `{{DIAGRAM_ALT}}`: the topic name
-- `{{FOOTER_TEXT}}`: `footerText` from `config.json`
-- `{{LOGO_PATH}}`: `logoPath` from `config.json` (use the absolute path so the screenshot can resolve it)
+- `{{FOOTER_TEXT}}`: `footerText` from `config.json` (optional, see footer rules)
+- `{{LOGO_PATH}}`: `logoPath` from `config.json`, as an absolute path so the screenshot can resolve it (optional, see footer rules)
+
+**General rule: every config-driven element is optional. If its `config.json` field is missing or an empty string, REMOVE that element from the HTML instead of leaving an empty value or a broken `{{PLACEHOLDER}}`.** This applies to `personPhoto`, `logoPath`, `footerText` (and to `ctaLine`/`newsletterUrl` in the caption, Step 6). The tech icon and title are the only always-present header elements.
 
 Layout: the **person photo sits top-left**; the **tech icon + title sit top-right, right-aligned** (icon then title).
 
@@ -124,7 +126,7 @@ Person photo rules:
 Icon rules:
 - Pick the appropriate tech icon URL (lobehub or devicon) for `{{ICON_PATH}}`.
 - **If the topic is generic/comparison with no specific technology icon**, set `{{ICON_PATH}}` to the absolute path of `logoPath` from `config.json` (the brand logo doubles as the fallback icon). Do not leave a default placeholder.
-- **NEVER remove the icon.** Every infographic keeps the top-left icon. The `<div class="tech-icon">` element always stays.
+- **Keep the icon whenever there is a source for it** (a real tech icon, or `logoPath` as the generic fallback). Only if the topic is generic AND `logoPath` is missing/empty (no icon source at all) do you remove the `<div class="tech-icon">` element.
 
 Title rules:
 - **If the full "HOW X WORKS" title is long (more than ~16 characters) and would collide with the icon, SHORTEN the on-image title instead of removing the icon.** Trim filler words: drop "HOW" and "WORKS/WORK" and any redundant words, keeping only the core subject so it fits on one line next to the icon.
@@ -132,6 +134,11 @@ Title rules:
 - The icon often already conveys the technology, so the shortened title does not need to repeat it (a Java icon plus "VIRTUAL THREADS" reads cleanly).
 - Short titles like "HOW SSH WORKS" or "HOW DOCKER WORKS" already fit and need no shortening.
 - The **folder name** always uses the full "How [Topic] Works" form. Only the on-image `{{TITLE}}` is shortened.
+
+Footer rules:
+- `{{LOGO_PATH}}` (bottom-left wordmark): if `logoPath` is non-empty, set it to the absolute path (expand a leading `~`). **If `logoPath` is empty/missing, REMOVE the whole `<div class="logo">...</div>` element.**
+- `{{FOOTER_TEXT}}` (bottom-center website text): if `footerText` is non-empty, use it. **If `footerText` is empty/missing, REMOVE the `<span class="bottom-url">...</span>` element.**
+- If both are empty, the bottom bar renders nothing, which is fine.
 
 Save as `<outputDir>/How [Topic] Works/How [Topic] Works.html`.
 
@@ -159,7 +166,7 @@ Create `caption.txt` in the output directory using the system prompt below.
 
 **Use the two configurable footer lines straight from `config.json`. Do NOT ask the user every run.** They are bundled into config so the run stays uninterrupted:
 
-1. **Closing CTA line** — use `config.json` field `ctaLine` verbatim as the final line.
+1. **Closing CTA line** — use `config.json` field `ctaLine` verbatim as the final line. If `ctaLine` is empty/missing, omit the closing CTA line entirely.
 2. **Mailing list line** — if `config.json` has a non-empty `newsletterUrl`, add the subscribe line by taking the `newsletterLine` template and replacing `{{NEWSLETTER_URL}}` with `newsletterUrl`. If `newsletterUrl` is empty or missing, omit the subscribe line.
 
 Only revisit these if the user explicitly asks to change the CTA or newsletter wording/link in their message; in that case update the relevant `config.json` field and use the new value. Otherwise never prompt.
