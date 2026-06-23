@@ -21,23 +21,28 @@
       font-family: sans-serif;
     }
 
-    /* Top-left header row: person photo + tech icon + title, left to right */
-    .header {
+    /* Top-left: author/person photo (circular). Removed entirely when no photo. */
+    .person-photo {
       position: absolute;
       top: 30px;
       left: 50px;
+    }
+
+    .person-photo img {
+      width: 112px;
+      height: 112px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    /* Top-right: tech icon + title, right-aligned (icon then title) */
+    .title-row {
+      position: absolute;
+      top: 30px;
       right: 50px;
       display: flex;
       align-items: center;
-      gap: 22px;
-    }
-
-    /* Optional author/person photo (circular). Removed entirely when no photo. */
-    .person-photo img {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      object-fit: cover;
+      gap: 20px;
     }
 
     .tech-icon img {
@@ -52,7 +57,7 @@
       font-size: 54px;
       color: #181D2F;
       text-transform: uppercase;
-      text-align: left;
+      text-align: right;
       white-space: nowrap;
     }
 
@@ -91,7 +96,7 @@
     /* Content image */
     .content {
       position: absolute;
-      top: 140px;
+      top: 165px;
       left: 48px;
       right: 0;
       bottom: 80px;
@@ -124,13 +129,15 @@
     {{LOGO_PATH}}    - brand wordmark, from config.logoPath
     {{FOOTER_TEXT}}  - footer URL/text, from config.footerText
 
-  Header order is left to right: person photo, then tech icon, then title.
+  Layout: person photo sits top-left. The tech icon + title sit top-right,
+  right-aligned (icon then title).
 -->
 <div class="slide">
-  <div class="header">
-    <div class="person-photo">
-      <img src="{{PERSON_PHOTO}}" alt="author" />
-    </div>
+  <div class="person-photo">
+    <img src="{{PERSON_PHOTO}}" alt="author" />
+  </div>
+
+  <div class="title-row">
     <div class="tech-icon">
       <img src="{{ICON_PATH}}" alt="icon" />
     </div>

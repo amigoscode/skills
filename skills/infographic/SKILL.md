@@ -115,7 +115,7 @@ Read the template from `SKILL_DIR/assets/template.html` and create a copy in the
 - `{{FOOTER_TEXT}}`: `footerText` from `config.json`
 - `{{LOGO_PATH}}`: `logoPath` from `config.json` (use the absolute path so the screenshot can resolve it)
 
-The header is a left-aligned row, ordered left to right: **person photo → tech icon → title**. The title is left-aligned right after the icon.
+Layout: the **person photo sits top-left**; the **tech icon + title sit top-right, right-aligned** (icon then title).
 
 Person photo rules:
 - Read `personPhoto` from `config.json`. If it is a non-empty path AND the file exists, set `{{PERSON_PHOTO}}` to its absolute path (expand a leading `~` to the home directory) so the screenshot can resolve it.
@@ -424,7 +424,8 @@ Always pass **all three** reference images via `--ref` flags to `generate-diagra
 ## HTML Template
 
 The template is at `assets/template.html`. It uses placeholders (filled in Step 4) and contains:
-- **Top-left header row** (left to right): person photo `{{PERSON_PHOTO}}` (56px circular avatar, from `config.personPhoto`, removed when empty/missing), then tech icon `{{ICON_PATH}}` (80px, from lobehub/devicon CDN, or the brand `logoPath` for generic topics; always present), then Title `{{TITLE}}` in bold uppercase Inter font (left-aligned, right after the icon)
+- **Top-left**: person photo `{{PERSON_PHOTO}}` (112px circular avatar, from `config.personPhoto`, removed when empty/missing)
+- **Top-right** (right-aligned, icon then title): tech icon `{{ICON_PATH}}` (80px, from lobehub/devicon CDN, or the brand `logoPath` for generic topics; always present), then Title `{{TITLE}}` in bold uppercase Inter font
 - **Center**: The diagram image `{{DIAGRAM_SRC}}` (`object-fit: contain`)
 - **Bottom-left**: Footer text `{{FOOTER_TEXT}}` (Epilogue font, regular weight), from `config.json`
 - **Bottom-center**: Brand wordmark `{{LOGO_PATH}}` (38px height), from `config.json`
