@@ -40,8 +40,9 @@ for skill_dir in "$SKILLS_DIR"/*/; do
         continue
     fi
 
-    # Extract frontmatter
-    frontmatter=$(sed -n '/^---$/,/^---$/p' "$skill_file" | head -n -1 | tail -n +2)
+    # Extract frontmatter (content strictly between the first two '---' lines).
+    # Uses awk so it works on both BSD/macOS and GNU (avoids `head -n -1`).
+    frontmatter=$(awk '/^---$/{c++; next} c==1{print} c==2{exit}' "$skill_file")
 
     # Validate frontmatter exists
     if [[ -z "$frontmatter" ]]; then
