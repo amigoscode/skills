@@ -326,15 +326,36 @@ with open(os.path.join('<outputDir>', 'carousel.pdf'), 'wb') as f:
 "
 ```
 
-### Step 7: Generate Beat-Synced MP4s and GIF (optional)
+### Step 7: Generate Beat-Synced MP4s and GIF
 
 Generate MP4 videos where slides change on bass hits. One MP4 per audio track,
 plus a GIF. Audio tracks live in `SKILL_DIR/audio/`:
 - `desolate-slowed.m4a` — bass hits start ~25s, ~1.4s intervals.
 - `else-paris.m4a` — tighter rhythm, bass hits start ~37s.
 
-If the audio files are absent, skip the beat-synced MP4s and still produce the
-silent MP4 and GIF below.
+**Ensure `ffmpeg` first (install it if missing — do not skip the videos).** The
+MP4 and GIF outputs need `ffmpeg`. If it is not on the PATH, install it with the
+platform's package manager, then continue:
+
+```bash
+if ! command -v ffmpeg >/dev/null 2>&1; then
+  echo "ffmpeg not found — installing..."
+  if command -v brew >/dev/null 2>&1; then brew install ffmpeg
+  elif command -v apt-get >/dev/null 2>&1; then sudo apt-get update && sudo apt-get install -y ffmpeg
+  elif command -v dnf >/dev/null 2>&1; then sudo dnf install -y ffmpeg
+  elif command -v yum >/dev/null 2>&1; then sudo yum install -y epel-release && sudo yum install -y ffmpeg
+  elif command -v pacman >/dev/null 2>&1; then sudo pacman -S --noconfirm ffmpeg
+  elif command -v apk >/dev/null 2>&1; then sudo apk add ffmpeg
+  else echo "No known package manager — install ffmpeg manually."; fi
+fi
+command -v ffmpeg >/dev/null 2>&1 && echo "ffmpeg ready" || echo "ffmpeg still missing — video/GIF steps will be skipped"
+```
+
+Only skip the MP4/GIF outputs if `ffmpeg` still cannot be installed (e.g. no
+package manager or no sudo). The beat-synced MP4s additionally need Python
+`librosa`; if it is missing, install it with `pip install librosa` or skip just the
+beat-synced pair while still producing the silent MP4 and GIF. If the audio files
+are absent, skip only the beat-synced MP4s.
 
 ```bash
 python3 SKILL_DIR/scripts/beat-sync-video.py \
