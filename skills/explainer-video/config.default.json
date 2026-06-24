@@ -1,0 +1,18 @@
+{
+  "logoPath": "assets/logo-mark.svg",
+  "fontPath": "assets/Epilogue.woff2",
+  "designPath": "assets/design.md",
+  "footerText": "amigoscode.com",
+  "outputDir": "~/amigoscode-skills/explainer-video",
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "scenePad": 0.55,
+  "sceneCrossfade": 0.4,
+  "voiceId": "BtWabtumIemAotTjP5sk",
+  "voiceModel": "eleven_multilingual_v2",
+  "voiceSettings": { "stability": 0.30, "similarity_boost": 0.80, "style": 0.55, "use_speaker_boost": true },
+  "autoTransitions": true,
+  "sfxVolumes": { "pop": 0.5, "whoosh": 0.4, "tick": 0.35, "chime": 0.34, "boom": 0.18, "transition": 0.22 },
+  "ctaLine": "Follow Amigoscode for practical lessons that help developers think like real software engineers"
+}

@@ -1,0 +1,15 @@
+# Secrets
+.env
+
+# Per-user config (created on first run)
+config.json
+
+# Dependencies
+node_modules
+
+# Generated video projects / output
+/output/
+
+# OS / editor cruft
+.DS_Store
+*.log

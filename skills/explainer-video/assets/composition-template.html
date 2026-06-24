@@ -1,0 +1,256 @@
+<!doctype html>
+<!--
+  Amigoscode explainer-video composition skeleton (1080x1920, ~8 scenes).
+  Fill in: scene CONTENT slots, per-scene GSAP beats, chapter labels, VO lines, sfx-events.
+  Conventions REQUIRED by patch-time.mjs (do not rename):
+    - scenes: <div id="sN" class="scene clip" ...>  (N = 1..8)
+    - audio:  <audio id="voN" ... src="vo/sN.wav" ... data-track-index="5">
+    - script: `const sN = 0;` base per scene (s1 is absolute 0, has no const)
+    - `const CH_T = [...]`, the SFX_START/SFX_END markers, the caption clamp Math.min(gEnd+0.3, X)
+  Tracks: scenes 1-2, watermark 3, chapter 4, VO 5, SFX whoosh 7 / pop 8+10 / chime 9 / tick 11 / boom 12.
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script src="captions-data.js"></script>
+    <style>
+      @font-face { font-family: 'Epilogue'; font-style: normal; font-weight: 100 900; font-display: block; src: url('fonts/Epilogue.woff2') format('woff2'); }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #0b0e1c; }
+      :root {
+        --navy950:#0b0e1c; --navy900:#151a2d; --ink800:#20273e; --ink700:#262c45;
+        --ink600:#2e3551; --ink500:#3f4768; --ink400:#5f6885; --ink300:#8e96b3;
+        --ink200:#bcc2d6; --ink100:#dde1ec; --ink50:#eef0f6; --ink25:#f7f8fb;
+        --white:#ffffff; --purple:#7f56d9; --purple700:#5a37a6; --purple600:#6c44c4;
+        --purple400:#9c80e5; --purple300:#bda8f3; --purple200:#d9ccff; --purple100:#ece4ff; --purple50:#f5f1ff;
+        --green:#12b76a; --green600:#039855; --greenSoft:rgba(18,183,106,0.14);
+        --red:#f04438; --redSoft:rgba(240,68,56,0.14); --amber:#f79009; --blue:#2e90fa;
+        --grad:linear-gradient(165deg,#8a63e0 0%,#6c44c4 100%);
+      }
+      body { font-family: 'Epilogue', system-ui, sans-serif; }
+      .scene { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden; }
+      .kicker { position: absolute; left: 90px; top: 150px; display: flex; align-items: center; gap: 16px; }
+      .kicker .bar { width: 38px; height: 6px; border-radius: 3px; background: var(--purple); }
+      .kicker.dark .bar { background: var(--purple400); }
+      .kicker .txt { font-weight: 700; font-size: 28px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--purple); }
+      .kicker.dark .txt { color: var(--purple300); }
+      .headline { position: absolute; left: 90px; top: 226px; width: 900px; font-weight: 800; font-size: 78px; line-height: 1.04; letter-spacing: -0.025em; color: var(--navy900); }
+      .headline.dark { color: var(--white); }
+      .card { position: absolute; box-sizing: border-box; }
+      .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+      .arrow-svg { position: absolute; inset: 0; pointer-events: none; }
+      .arrow-svg line, .arrow-svg polyline { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      /* component library (use or ignore per topic) */
+      .sblock { position: absolute; left: 350px; width: 380px; height: 92px; border-radius: 16px; background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.06) 0 2px, transparent 2px 24px), var(--grad); box-shadow: 0 16px 34px -14px rgba(127,86,217,0.55); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 36px; }
+      .method { display: inline-flex; align-items: center; padding: 10px 18px; border-radius: 999px; background: var(--purple50); border: 1.5px solid var(--purple200); color: var(--purple700); font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 22px; font-weight: 600; }
+      .usechip { display: inline-flex; align-items: center; gap: 10px; padding: 16px 22px; border-radius: 14px; background: var(--ink800); border: 1px solid var(--ink600); color: var(--ink100); font-weight: 700; font-size: 27px; }
+      /* persistent overlays */
+      #watermark { position: absolute; top: 78px; right: 84px; z-index: 30; }
+      #chapter { position: absolute; left: 0; right: 0; bottom: 66px; z-index: 30; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+      #chapter .dots { display: flex; gap: 10px; }
+      #chapter .dot { width: 9px; height: 9px; border-radius: 999px; background: rgba(142,150,179,0.45); }
+      #chapter .labels { position: relative; height: 30px; width: 560px; }
+      #chapter .label { position: absolute; left: 0; right: 0; text-align: center; font-weight: 600; font-size: 22px; letter-spacing: 0.05em; color: var(--ink400); opacity: 0; }
+      /* word-by-word captions */
+      #captions { position: absolute; left: 90px; right: 90px; top: 1486px; height: 200px; z-index: 25; }
+      .cg { position: absolute; left: 0; right: 0; top: 0; display: flex; flex-wrap: wrap; justify-content: center; align-content: flex-start; gap: 12px 16px; opacity: 0; }
+      .cg .w { display: inline-block; font-weight: 700; font-size: 54px; line-height: 1.18; letter-spacing: -0.01em; transform-origin: center bottom; will-change: transform, color; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="42" data-width="1080" data-height="1920">
+
+      <!-- Scene backgrounds follow the brand rhythm: dark, light, white, dark, white, light, dark, deepest.
+           data-start/data-duration are placeholders; patch-time.mjs overwrites them from the VO. -->
+      <div id="s1" class="scene clip" data-start="0"  data-duration="6" data-track-index="1" style="background: var(--navy900); z-index: 11;">
+        <div class="kicker dark s1-kick"><div class="bar"></div><div class="txt">KICKER</div></div>
+        <div class="headline dark s1-head">Scene one<br />headline</div>
+        <!-- SCENE 1 CONTENT --></div>
+      <div id="s2" class="scene clip" data-start="5.6" data-duration="6.7" data-track-index="2" style="background: var(--ink25); z-index: 12;">
+        <div class="kicker s2-kick"><div class="bar"></div><div class="txt">KICKER</div></div>
+        <div class="headline s2-head">Scene two<br />headline</div>
+        <!-- SCENE 2 CONTENT --></div>
+      <div id="s3" class="scene clip" data-start="11.9" data-duration="6.7" data-track-index="1" style="background: var(--white); z-index: 13;">
+        <div class="kicker s3-kick"><div class="bar"></div><div class="txt">KICKER</div></div>
+        <div class="headline s3-head">Scene three</div>
+        <!-- SCENE 3 CONTENT --></div>
+      <div id="s4" class="scene clip" data-start="18.2" data-duration="6.7" data-track-index="2" style="background: var(--navy900); z-index: 14;">
+        <div class="kicker dark s4-kick"><div class="bar"></div><div class="txt">KICKER</div></div>
+        <div class="headline dark s4-head">Scene four</div>
+        <!-- SCENE 4 CONTENT --></div>
+      <div id="s5" class="scene clip" data-start="24.5" data-duration="6.8" data-track-index="1" style="background: var(--white); z-index: 15;">
+        <div class="kicker s5-kick"><div class="bar"></div><div class="txt">KICKER</div></div>
+        <div class="headline s5-head">Scene five</div>
+        <!-- SCENE 5 CONTENT --></div>
+      <div id="s6" class="scene clip" data-start="31.2" data-duration="6.7" data-track-index="2" style="background: var(--ink25); z-index: 16;">
+        <div class="kicker s6-kick"><div class="bar"></div><div class="txt">KICKER</div></div>
+        <div class="headline s6-head">Scene six</div>
+        <!-- SCENE 6 CONTENT --></div>
+      <div id="s7" class="scene clip" data-start="37.9" data-duration="3.6" data-track-index="1" style="background: var(--navy900); z-index: 17;">
+        <div class="kicker dark s7-kick"><div class="bar"></div><div class="txt">KICKER</div></div>
+        <div class="headline dark s7-head">Scene seven</div>
+        <!-- SCENE 7 CONTENT --></div>
+      <div id="s8" class="scene clip" data-start="41.1" data-duration="3.4" data-track-index="2" style="background: var(--navy950); z-index: 18;">
+        <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+          <img class="s8-logo" src="assets/logo-mark.svg" width="132" height="132" />
+          <div class="s8-t1" style="margin-top:44px; text-align:center; font-weight:800; font-size:62px; letter-spacing:-0.025em; color:var(--white); line-height:1.12;">Closing line<br /><span style="color:var(--purple300);">payoff.</span></div>
+          <div class="s8-t2" style="margin-top:40px; font-weight:700; font-size:26px; letter-spacing:0.16em; text-transform:uppercase; color:var(--ink300);">Topic, demystified</div>
+        </div></div>
+
+      <!-- VOICEOVER (one clip per scene; timing overwritten by patch-time.mjs) -->
+      <audio id="vo1" class="clip" src="vo/s1.wav" data-start="0"    data-duration="5" data-track-index="5"></audio>
+      <audio id="vo2" class="clip" src="vo/s2.wav" data-start="5.6"  data-duration="5" data-track-index="5"></audio>
+      <audio id="vo3" class="clip" src="vo/s3.wav" data-start="11.9" data-duration="5" data-track-index="5"></audio>
+      <audio id="vo4" class="clip" src="vo/s4.wav" data-start="18.2" data-duration="5" data-track-index="5"></audio>
+      <audio id="vo5" class="clip" src="vo/s5.wav" data-start="24.5" data-duration="5" data-track-index="5"></audio>
+      <audio id="vo6" class="clip" src="vo/s6.wav" data-start="31.2" data-duration="5" data-track-index="5"></audio>
+      <audio id="vo7" class="clip" src="vo/s7.wav" data-start="37.9" data-duration="3" data-track-index="5"></audio>
+      <audio id="vo8" class="clip" src="vo/s8.wav" data-start="41.1" data-duration="3" data-track-index="5"></audio>
+
+      <!-- SOUND EFFECTS (regenerated by patch-time.mjs from vo/sfx-events.json) -->
+      <!-- SFX_START -->
+      <!-- SFX_END -->
+
+      <!-- PERSISTENT OVERLAYS -->
+      <img id="watermark" class="clip" src="assets/logo-mark.svg" width="42" height="42" data-start="0" data-duration="42" data-track-index="3" />
+      <div id="chapter" class="clip" data-start="0" data-duration="42" data-track-index="4">
+        <div class="dots"><div class="dot" data-i="0"></div><div class="dot" data-i="1"></div><div class="dot" data-i="2"></div><div class="dot" data-i="3"></div><div class="dot" data-i="4"></div><div class="dot" data-i="5"></div><div class="dot" data-i="6"></div><div class="dot" data-i="7"></div></div>
+        <div class="labels">
+          <div class="label" data-i="0">01 / 08 · Chapter</div>
+          <div class="label" data-i="1">02 / 08 · Chapter</div>
+          <div class="label" data-i="2">03 / 08 · Chapter</div>
+          <div class="label" data-i="3">04 / 08 · Chapter</div>
+          <div class="label" data-i="4">05 / 08 · Chapter</div>
+          <div class="label" data-i="5">06 / 08 · Chapter</div>
+          <div class="label" data-i="6">07 / 08 · Chapter</div>
+          <div class="label" data-i="7">08 / 08 · Recap</div>
+        </div>
+      </div>
+      <div id="captions" class="clip" data-start="0" data-duration="42" data-track-index="6"></div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const ease = "power3.out";
+      const NS = "http://www.w3.org/2000/svg";
+      const ST = [1180, 1074, 968, 862, 756]; // optional stack-block slot tops (bottom-up)
+      const slotCenterY = (i) => ST[i] + 46;
+
+      // self-drawing arrow helper
+      function arrow(svgId, x1, y1, x2, y2, color, at, dur) {
+        const svg = document.getElementById(svgId), len = Math.hypot(x2 - x1, y2 - y1);
+        const line = document.createElementNS(NS, "line");
+        line.setAttribute("x1", x1); line.setAttribute("y1", y1); line.setAttribute("x2", x2); line.setAttribute("y2", y2);
+        line.setAttribute("stroke", color); line.setAttribute("stroke-width", 5);
+        line.style.strokeDasharray = len; line.style.strokeDashoffset = len; svg.appendChild(line);
+        const ang = Math.atan2(y2 - y1, x2 - x1), ah = 16;
+        const head = document.createElementNS(NS, "polyline");
+        head.setAttribute("points", `${x2 - ah * Math.cos(ang - 0.5)},${y2 - ah * Math.sin(ang - 0.5)} ${x2},${y2} ${x2 - ah * Math.cos(ang + 0.5)},${y2 - ah * Math.sin(ang + 0.5)}`);
+        head.setAttribute("stroke", color); head.setAttribute("stroke-width", 5); head.style.opacity = 0; svg.appendChild(head);
+        tl.fromTo(line, { strokeDashoffset: len }, { strokeDashoffset: 0, duration: dur, ease: "power2.inOut" }, at);
+        tl.to(head, { opacity: 1, duration: 0.16 }, at + dur * 0.65);
+      }
+      // optional stack-block helper: append a brand block at slot index
+      function mkBlock(parentId, slotIdx, label, cls) {
+        const b = document.createElement("div"); b.className = "sblock" + (cls ? " " + cls : "");
+        b.style.top = ST[slotIdx] + "px"; b.textContent = label || ""; document.getElementById(parentId).appendChild(b); return b;
+      }
+
+      // ════════ SCENE TIMELINES ════════
+      // Author entrances here. Each scene: fade the scene in, then gsap.from() every element.
+      // Use absolute times for s1, and `sN + offset` for scenes 2..8 (the const sN are set by patch-time).
+      const s2 = 5.6, s3 = 11.9, s4 = 18.2, s5 = 24.5, s6 = 31.2, s7 = 37.9, s8 = 41.1;
+
+      tl.from("#s1", { opacity: 0, duration: 0.45 }, 0);
+      tl.from(".s1-kick", { y: -10, opacity: 0, duration: 0.5, ease }, 0.1);
+      tl.from(".s1-head", { y: 30, opacity: 0, duration: 0.6, ease }, 0.22);
+      // SCENE 1 BEATS
+
+      tl.from("#s2", { opacity: 0, duration: 0.45 }, s2);
+      tl.from(".s2-kick", { y: -10, opacity: 0, duration: 0.5, ease }, s2 + 0.1);
+      tl.from(".s2-head", { y: 30, opacity: 0, duration: 0.6, ease }, s2 + 0.22);
+      // SCENE 2 BEATS
+
+      tl.from("#s3", { opacity: 0, duration: 0.45 }, s3);
+      tl.from(".s3-kick", { y: -10, opacity: 0, duration: 0.5, ease }, s3 + 0.1);
+      tl.from(".s3-head", { y: 30, opacity: 0, duration: 0.6, ease }, s3 + 0.22);
+      // SCENE 3 BEATS
+
+      tl.from("#s4", { opacity: 0, duration: 0.45 }, s4);
+      tl.from(".s4-kick", { y: -10, opacity: 0, duration: 0.5, ease }, s4 + 0.1);
+      tl.from(".s4-head", { y: 30, opacity: 0, duration: 0.6, ease }, s4 + 0.22);
+      // SCENE 4 BEATS
+
+      tl.from("#s5", { opacity: 0, duration: 0.45 }, s5);
+      tl.from(".s5-kick", { y: -10, opacity: 0, duration: 0.5, ease }, s5 + 0.1);
+      tl.from(".s5-head", { y: 30, opacity: 0, duration: 0.6, ease }, s5 + 0.22);
+      // SCENE 5 BEATS
+
+      tl.from("#s6", { opacity: 0, duration: 0.45 }, s6);
+      tl.from(".s6-kick", { y: -10, opacity: 0, duration: 0.5, ease }, s6 + 0.1);
+      tl.from(".s6-head", { y: 30, opacity: 0, duration: 0.6, ease }, s6 + 0.22);
+      // SCENE 6 BEATS
+
+      tl.from("#s7", { opacity: 0, duration: 0.45 }, s7);
+      tl.from(".s7-kick", { y: -10, opacity: 0, duration: 0.5, ease }, s7 + 0.1);
+      tl.from(".s7-head", { y: 30, opacity: 0, duration: 0.6, ease }, s7 + 0.22);
+      // SCENE 7 BEATS
+
+      tl.from("#s8", { opacity: 0, duration: 0.45 }, s8);
+      tl.fromTo(".s8-logo", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(1.7)", transformOrigin: "center" }, s8);
+      tl.from(".s8-t1", { y: 22, opacity: 0, duration: 0.6, ease }, s8 + 0.55);
+      tl.from(".s8-t2", { y: 16, opacity: 0, duration: 0.5, ease }, s8 + 1.0);
+
+      // ════════ PERSISTENT: chapter indicator ════════
+      const CH_T = [0, 5.6, 11.9, 18.2, 24.5, 31.2, 37.9, 41.1];
+      const darkCh = [true, false, false, true, false, false, true, true]; // matches scene backgrounds
+      gsap.set(".label[data-i='0']", { opacity: 1 });
+      gsap.set(".dot[data-i='0']", { width: 34, backgroundColor: "#7f56d9" });
+      for (let i = 1; i < CH_T.length; i++) {
+        const t = CH_T[i];
+        const inactiveDot = darkCh[i] ? "rgba(189,168,243,0.4)" : "rgba(142,150,179,0.45)";
+        const labelCol = darkCh[i] ? "rgba(189,168,243,0.95)" : "#5f6885";
+        tl.to(`.label[data-i='${i - 1}']`, { opacity: 0, duration: 0.3 }, t);
+        tl.to(`.label[data-i='${i}']`, { opacity: 1, color: labelCol, duration: 0.3 }, t);
+        tl.to(`.dot[data-i='${i - 1}']`, { width: 9, backgroundColor: inactiveDot, duration: 0.3 }, t);
+        tl.to(`.dot[data-i='${i}']`, { width: 34, backgroundColor: "#7f56d9", duration: 0.3 }, t);
+      }
+      tl.from("#watermark", { opacity: 0, duration: 0.5 }, 0);
+
+      // ════════ WORD-BY-WORD CAPTIONS (built from captions-data.js) ════════
+      (function buildCaptions() {
+        const WORDS = window.CAPTION_WORDS || [];
+        const DARK = { s1: 1, s4: 1, s7: 1, s8: 1 }; // dark scenes => white caption text
+        const wrap = document.getElementById("captions");
+        const groups = []; let cur = [];
+        for (let i = 0; i < WORDS.length; i++) {
+          const w = WORDS[i], nx = WORDS[i + 1]; cur.push(w);
+          const endsSentence = /[.!?]$/.test(w.t), gap = nx ? nx.s - w.e : Infinity, sceneChange = nx ? nx.sc !== w.sc : true;
+          if (endsSentence || sceneChange || gap > 0.45 || cur.length >= 3 || !nx) { groups.push(cur); cur = []; }
+        }
+        groups.forEach((g, gi) => {
+          const dark = !!DARK[g[0].sc], baseCol = dark ? "#ffffff" : "#151a2d", actCol = dark ? "#bda8f3" : "#7f56d9";
+          const cg = document.createElement("div"); cg.className = "cg"; cg.id = "cg-" + gi;
+          g.forEach((w, wj) => { const sp = document.createElement("span"); sp.className = "w"; sp.id = "cg-" + gi + "-w" + wj; sp.textContent = w.t; sp.style.color = baseCol; cg.appendChild(sp); });
+          wrap.appendChild(cg);
+          const gStart = g[0].s, gEnd = g[g.length - 1].e, next = groups[gi + 1];
+          const appearAt = Math.max(0, gStart - 0.08);
+          const killAt = next ? Math.min(gEnd + 0.22, next[0].s - 0.12) : Math.min(gEnd + 0.3, 41.98);
+          tl.fromTo("#cg-" + gi, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.22, ease: "back.out(1.4)" }, appearAt);
+          g.forEach((w, wj) => {
+            const sel = "#cg-" + gi + "-w" + wj;
+            tl.to(sel, { color: actCol, scale: 1.12, duration: 0.1, ease: "power2.out" }, w.s);
+            tl.to(sel, { color: baseCol, scale: 1.0, duration: 0.12, ease: "power2.in" }, Math.max(w.e, w.s + 0.12));
+          });
+          tl.to("#cg-" + gi, { opacity: 0, y: -8, duration: 0.14, ease: "power2.in" }, killAt - 0.14);
+          tl.set("#cg-" + gi, { opacity: 0, visibility: "hidden" }, killAt);
+        });
+      })();
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

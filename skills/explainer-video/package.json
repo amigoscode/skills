@@ -1,0 +1,8 @@
+{
+  "name": "explainer-video-skill",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Generate branded Amigoscode vertical explainer videos (HyperFrames) with ElevenLabs voiceover, word-by-word captions, and synced sound effects.",
+  "license": "MIT"
+}

@@ -18,6 +18,7 @@ Skills are markdown files that give AI agents specialized knowledge and workflow
 | Skill | Description |
 |-------|-------------|
 | [carousel](skills/carousel/) | Generate branded LinkedIn carousel slides (1080x1350px PNGs), a combined PDF, beat-synced MP4s, a GIF, and platform... |
+| [explainer-video](skills/explainer-video/) | Produce a branded vertical explainer video (1080x1920 MP4) that teaches one technical concept in ~40s: 8 animated scenes, ElevenLabs voiceover, word-by-word captions, synced sound effects, plus a LinkedIn caption... |
 | [infographic](skills/infographic/) | Generate 'HOW X WORKS' educational infographic diagrams for Amigoscode — hand-drawn style diagrams about backend/Java... |
 | [linkedin-poster](skills/linkedin-poster/) | Fully autonomous LinkedIn poster. Drives the LinkedIn web composer via Playwright/TypeScript to publish posts... |
 | [x-card](skills/x-card/) | Generate a social media quote card styled like a dark-mode X (Twitter) post: profile photo, blue verified tick, name,... |
@@ -34,7 +35,7 @@ Use [npx skills](https://github.com/vercel-labs/skills) to install skills direct
 npx skills add amigoscode/skills
 
 # Install specific skills
-npx skills add amigoscode/skills --skill infographic carousel x-card linkedin-poster
+npx skills add amigoscode/skills --skill infographic carousel explainer-video x-card linkedin-poster
 
 # List available skills
 npx skills add amigoscode/skills --list
@@ -87,6 +88,7 @@ Each skill has its own dependencies and one-time setup. See the skill READMEs:
 
 - [`skills/infographic/README.md`](./skills/infographic/README.md) — needs a `GEMINI_API_KEY` and `npm install` for the diagram generator and Playwright screenshot step.
 - [`skills/carousel/README.md`](./skills/carousel/README.md) — needs `npm install` + `npx playwright install chromium`; Python 3 with `librosa` and `ffmpeg` for the beat-synced videos.
+- [`skills/explainer-video/README.md`](./skills/explainer-video/README.md) — needs an `ELEVEN_LABS` API key (Creator tier for cloned voices), `ffmpeg`/`ffprobe`, and `npx hyperframes` (Whisper transcription + render).
 - [`skills/x-card/README.md`](./skills/x-card/README.md) — needs Python 3 with Pillow (`pip install pillow`). Fonts and badge are bundled.
 - [`skills/linkedin-poster/README.md`](./skills/linkedin-poster/README.md) — needs `npm install` + `npx playwright install chromium`, then a one-time LinkedIn login that is saved for future runs.
 

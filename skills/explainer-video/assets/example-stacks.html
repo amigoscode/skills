@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script src="captions-data.js"></script>
+    <style>
+      @font-face {
+        font-family: 'Epilogue';
+        font-style: normal;
+        font-weight: 100 900;
+        font-display: block;
+        src: url('fonts/Epilogue.woff2') format('woff2');
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #0b0e1c; }
+      :root {
+        --navy950:#0b0e1c; --navy900:#151a2d; --ink800:#20273e; --ink700:#262c45;
+        --ink600:#2e3551; --ink500:#3f4768; --ink400:#5f6885; --ink300:#8e96b3;
+        --ink200:#bcc2d6; --ink100:#dde1ec; --ink50:#eef0f6; --ink25:#f7f8fb;
+        --white:#ffffff; --purple:#7f56d9; --purple700:#5a37a6; --purple600:#6c44c4;
+        --purple400:#9c80e5; --purple300:#bda8f3; --purple200:#d9ccff; --purple100:#ece4ff; --purple50:#f5f1ff;
+        --green:#12b76a; --green600:#039855; --greenSoft:rgba(18,183,106,0.14);
+        --red:#f04438; --redSoft:rgba(240,68,56,0.14); --amber:#f79009; --blue:#2e90fa;
+        --grad:linear-gradient(165deg,#8a63e0 0%,#6c44c4 100%);
+      }
+      body { font-family: 'Epilogue', system-ui, sans-serif; }
+      .scene { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: hidden; }
+
+      .kicker { position: absolute; left: 90px; top: 150px; display: flex; align-items: center; gap: 16px; }
+      .kicker .bar { width: 38px; height: 6px; border-radius: 3px; background: var(--purple); }
+      .kicker.dark .bar { background: var(--purple400); }
+      .kicker .txt { font-weight: 700; font-size: 28px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--purple); }
+      .kicker.dark .txt { color: var(--purple300); }
+      .headline { position: absolute; left: 90px; top: 226px; width: 900px; font-weight: 800; font-size: 78px; line-height: 1.04; letter-spacing: -0.025em; color: var(--navy900); }
+      .headline.dark { color: var(--white); }
+
+      .card { position: absolute; box-sizing: border-box; }
+      .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+      .arrow-svg { position: absolute; inset: 0; pointer-events: none; }
+      .arrow-svg line, .arrow-svg polyline { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+      /* Stack blocks */
+      .sblock { position: absolute; left: 350px; width: 380px; height: 92px; border-radius: 16px;
+        background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.06) 0 2px, transparent 2px 24px), var(--grad);
+        box-shadow: 0 16px 34px -14px rgba(127,86,217,0.55); display: flex; align-items: center; justify-content: center;
+        color: #fff; font-weight: 800; font-size: 36px; letter-spacing: -0.01em; }
+      .topchip { position: absolute; left: 762px; display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 999px;
+        background: var(--purple50); border: 1.5px solid var(--purple200); color: var(--purple700); font-weight: 800; font-size: 22px; letter-spacing: 0.06em; }
+      .topchip.dark { background: rgba(127,86,217,0.18); border-color: rgba(189,168,243,0.5); color: var(--purple300); }
+      .retchip { position: absolute; display: inline-flex; align-items: center; gap: 8px; padding: 11px 18px; border-radius: 12px;
+        font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 600; font-size: 24px; }
+
+      .method { display: inline-flex; align-items: center; padding: 10px 18px; border-radius: 999px; background: var(--purple50);
+        border: 1.5px solid var(--purple200); color: var(--purple700); font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 22px; font-weight: 600; }
+      .usechip { display: inline-flex; align-items: center; gap: 10px; padding: 16px 22px; border-radius: 14px; background: var(--ink800);
+        border: 1px solid var(--ink600); color: var(--ink100); font-weight: 700; font-size: 27px; }
+
+      /* Persistent overlays */
+      #watermark { position: absolute; top: 78px; right: 84px; z-index: 30; }
+      #chapter { position: absolute; left: 0; right: 0; bottom: 66px; z-index: 30; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+      #chapter .dots { display: flex; gap: 10px; }
+      #chapter .dot { width: 9px; height: 9px; border-radius: 999px; background: rgba(142,150,179,0.45); }
+      #chapter .labels { position: relative; height: 30px; width: 520px; }
+      #chapter .label { position: absolute; left: 0; right: 0; text-align: center; font-weight: 600; font-size: 22px; letter-spacing: 0.05em; color: var(--ink400); opacity: 0; }
+
+      /* Word-by-word captions */
+      #captions { position: absolute; left: 90px; right: 90px; top: 1486px; height: 200px; z-index: 25; }
+      .cg { position: absolute; left: 0; right: 0; top: 0; display: flex; flex-wrap: wrap; justify-content: center; align-content: flex-start; gap: 12px 16px; opacity: 0; }
+      .cg .w { display: inline-block; font-weight: 700; font-size: 54px; line-height: 1.18; letter-spacing: -0.01em; transform-origin: center bottom; will-change: transform, color; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="47.38" data-width="1080" data-height="1920">
+
+      <!-- ════════ SCENE 1 — WHAT IS A STACK ════════ -->
+      <div id="s1" class="scene clip" data-start="0" data-duration="5.61" data-track-index="1" style="background: var(--navy900); z-index: 11;">
+        <div class="kicker dark s1-kick"><div class="bar"></div><div class="txt">Data structure</div></div>
+        <div class="headline dark s1-head">What is a<br /><span style="color:var(--purple300);">Stack?</span></div>
+        <div id="s1-stack"></div>
+        <div class="s1-bottomtag" style="position:absolute; left:350px; width:380px; top:1290px; text-align:center; font-weight:600; font-size:24px; color:var(--ink300);">a pile of items</div>
+      </div>
+
+      <!-- ════════ SCENE 2 — LIFO ════════ -->
+      <div id="s2" class="scene clip" data-start="5.21" data-duration="7.33" data-track-index="2" style="background: var(--ink25); z-index: 12;">
+        <div class="kicker s2-kick"><div class="bar"></div><div class="txt">The one rule</div></div>
+        <div class="headline s2-head">Last in,<br /><span style="color:var(--purple);">first out</span></div>
+        <div id="s2-stack"></div>
+        <svg class="arrow-svg" id="s2-arrows" width="1080" height="1920"></svg>
+        <div class="s2-push" style="position:absolute; left:250px; top:792px; font-weight:800; font-size:28px; color:var(--purple);">push ↓</div>
+        <div class="s2-pop" style="position:absolute; left:690px; top:792px; font-weight:800; font-size:28px; color:var(--purple);">pop ↑</div>
+        <div class="s2-only" style="position:absolute; left:350px; width:380px; top:1300px; text-align:center; font-weight:700; font-size:25px; color:var(--ink500);">only the top is reachable</div>
+      </div>
+
+      <!-- ════════ SCENE 3 — PUSH ════════ -->
+      <div id="s3" class="scene clip" data-start="12.14" data-duration="8.21" data-track-index="1" style="background: var(--white); z-index: 13;">
+        <div class="kicker s3-kick"><div class="bar"></div><div class="txt">Add to the top</div></div>
+        <div class="headline s3-head"><span class="mono" style="font-size:70px;">push()</span></div>
+        <div class="card s3-code mono" style="left:300px; top:418px; width:480px; border-radius:16px; background:var(--navy900); box-shadow:0 18px 40px -16px rgba(11,14,28,0.6); padding:18px 26px; color:var(--ink100); font-size:26px;">
+          <span style="color:var(--purple300);">stack</span>.<span style="color:#7ee787;">push</span>(<span class="s3-codeval" style="color:#ffd479;">10</span>);
+        </div>
+        <div id="s3-stack"></div>
+        <div class="topchip s3-top" style="top:1134px; opacity:0;">TOP</div>
+      </div>
+
+      <!-- ════════ SCENE 4 — POP & PEEK ════════ -->
+      <div id="s4" class="scene clip" data-start="19.95" data-duration="6.12" data-track-index="2" style="background: var(--navy900); z-index: 14;">
+        <div class="kicker dark s4-kick"><div class="bar"></div><div class="txt">Remove from the top</div></div>
+        <div class="headline dark s4-head"><span class="mono" style="font-size:60px; color:#fff;">pop()</span> &amp; <span class="mono" style="font-size:60px; color:var(--purple300);">peek()</span></div>
+        <div id="s4-stack"></div>
+        <div class="retchip s4-pop" style="left:706px; top:560px; background:var(--greenSoft); color:#5ee9a4; border:1.5px solid rgba(18,183,106,0.4); opacity:0;">pop() → 30</div>
+        <div class="retchip s4-peek" style="left:706px; top:986px; background:rgba(127,86,217,0.18); color:var(--purple300); border:1.5px solid rgba(189,168,243,0.5); opacity:0;">peek() → 20</div>
+      </div>
+
+      <!-- ════════ SCENE 5 — REVERSE ORDER ════════ -->
+      <div id="s5" class="scene clip" data-start="25.67" data-duration="8.91" data-track-index="1" style="background: var(--white); z-index: 15;">
+        <div class="kicker s5-kick"><div class="bar"></div><div class="txt">In then out</div></div>
+        <div class="headline s5-head">It <span style="color:var(--purple);">reverses</span><br />order</div>
+        <div id="s5-stack"></div>
+        <div class="s5-inlabel" style="position:absolute; left:350px; width:380px; top:710px; text-align:center; font-weight:700; font-size:26px; color:var(--ink400);">push 1 · 2 · 3</div>
+        <div class="s5-outwrap" style="position:absolute; left:120px; top:1300px; right:120px; display:flex; align-items:center; justify-content:center; gap:18px;">
+          <span style="font-weight:700; font-size:30px; color:var(--ink400);">out →</span>
+          <span class="s5-out s5-out0" style="opacity:0; width:74px; height:74px; border-radius:14px; background:var(--grad); color:#fff; font-weight:800; font-size:36px; display:flex; align-items:center; justify-content:center;">3</span>
+          <span class="s5-out s5-out1" style="opacity:0; width:74px; height:74px; border-radius:14px; background:var(--grad); color:#fff; font-weight:800; font-size:36px; display:flex; align-items:center; justify-content:center;">2</span>
+          <span class="s5-out s5-out2" style="opacity:0; width:74px; height:74px; border-radius:14px; background:var(--grad); color:#fff; font-weight:800; font-size:36px; display:flex; align-items:center; justify-content:center;">1</span>
+        </div>
+      </div>
+
+      <!-- ════════ SCENE 6 — JAVA API ════════ -->
+      <div id="s6" class="scene clip" data-start="34.18" data-duration="6.59" data-track-index="2" style="background: var(--ink25); z-index: 16;">
+        <div class="kicker s6-kick"><div class="bar"></div><div class="txt">In Java</div></div>
+        <div class="headline s6-head">Use a <span style="color:var(--purple);">Deque</span></div>
+        <div class="card s6-code mono" style="left:120px; top:440px; width:840px; border-radius:18px; background:var(--navy900); box-shadow:0 18px 40px -16px rgba(11,14,28,0.6); overflow:hidden;">
+          <div style="display:flex; align-items:center; gap:8px; padding:14px 22px; border-bottom:1px solid rgba(255,255,255,0.08);">
+            <div style="width:11px; height:11px; border-radius:999px; background:#ff5f57;"></div><div style="width:11px; height:11px; border-radius:999px; background:#febc2e;"></div><div style="width:11px; height:11px; border-radius:999px; background:#28c840;"></div>
+            <span style="font-size:18px; color:var(--ink300); margin-left:8px;">Stack.java</span>
+          </div>
+          <div style="padding:22px 28px; font-size:27px; line-height:1.7;">
+            <div class="s6-line"><span style="color:var(--purple300);">Deque</span><span style="color:var(--ink100);">&lt;Integer&gt; stack = </span><span style="color:var(--purple300);">new</span><span style="color:#7ee787;"> ArrayDeque</span><span style="color:var(--ink100);">&lt;&gt;();</span></div>
+            <div class="s6-line"><span style="color:var(--ink100);">stack.</span><span style="color:#7ee787;">push</span><span style="color:var(--ink100);">(</span><span style="color:#ffd479;">42</span><span style="color:var(--ink100);">);</span></div>
+            <div class="s6-line"><span style="color:var(--purple300);">int</span><span style="color:var(--ink100);"> top = stack.</span><span style="color:#7ee787;">pop</span><span style="color:var(--ink100);">();</span></div>
+          </div>
+        </div>
+        <div class="s6-methods" style="position:absolute; left:120px; top:790px; width:840px; display:flex; flex-wrap:wrap; gap:14px;">
+          <span class="method">push()</span><span class="method">pop()</span><span class="method">peek()</span><span class="method">isEmpty()</span>
+        </div>
+        <div class="s6-note" style="position:absolute; left:120px; top:910px; width:840px; text-align:left; font-weight:700; font-size:26px; color:var(--ink500);">↳ prefer <span style="color:var(--purple);">ArrayDeque</span> over the legacy <span class="mono" style="font-size:24px;">Stack</span> class</div>
+      </div>
+
+      <!-- ════════ SCENE 7 — REAL USES ════════ -->
+      <div id="s7" class="scene clip" data-start="40.37" data-duration="4.03" data-track-index="1" style="background: var(--navy900); z-index: 17;">
+        <div class="kicker dark s7-kick"><div class="bar"></div><div class="txt">Where it's used</div></div>
+        <div class="headline dark s7-head">It's <span style="color:var(--purple300);">everywhere</span></div>
+        <div style="position:absolute; left:120px; top:560px; right:120px; display:flex; flex-direction:column; gap:20px;">
+          <div class="usechip s7-use"><span>↩️</span> Undo &amp; redo</div>
+          <div class="usechip s7-use"><span>🌐</span> Browser back button</div>
+          <div class="usechip s7-use"><span>🧵</span> The call stack</div>
+          <div class="usechip s7-use"><span>{ }</span> Bracket matching</div>
+          <div class="usechip s7-use"><span>🌲</span> Depth-first search</div>
+        </div>
+      </div>
+
+      <!-- ════════ OUTRO ════════ -->
+      <div id="s8" class="scene clip" data-start="44" data-duration="3.38" data-track-index="2" style="background: var(--navy950); z-index: 18;">
+        <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+          <img class="s8-logo" src="assets/logo-mark.svg" width="132" height="132" />
+          <div class="s8-t1" style="margin-top:44px; text-align:center; font-weight:800; font-size:62px; letter-spacing:-0.025em; color:var(--white); line-height:1.12;">Push it. Pop it.<br /><span style="color:var(--purple300);">Last in, first out.</span></div>
+          <div class="s8-t2" style="margin-top:40px; font-weight:700; font-size:26px; letter-spacing:0.16em; text-transform:uppercase; color:var(--ink300);">Data structures, demystified</div>
+        </div>
+      </div>
+
+      <!-- ════════ VOICEOVER (Kokoro, bm_george) ════════ -->
+      <audio id="vo1" class="clip" src="vo/s1.wav" data-start="0"    data-duration="5.06" data-track-index="5"></audio>
+      <audio id="vo2" class="clip" src="vo/s2.wav" data-start="5.21"  data-duration="6.78" data-track-index="5"></audio>
+      <audio id="vo3" class="clip" src="vo/s3.wav" data-start="12.14" data-duration="7.66" data-track-index="5"></audio>
+      <audio id="vo4" class="clip" src="vo/s4.wav" data-start="19.95" data-duration="5.57" data-track-index="5"></audio>
+      <audio id="vo5" class="clip" src="vo/s5.wav" data-start="25.67" data-duration="8.36" data-track-index="5"></audio>
+      <audio id="vo6" class="clip" src="vo/s6.wav" data-start="34.18" data-duration="6.04" data-track-index="5"></audio>
+      <audio id="vo7" class="clip" src="vo/s7.wav" data-start="40.37" data-duration="3.48" data-track-index="5"></audio>
+      <audio id="vo8" class="clip" src="vo/s8.wav" data-start="44" data-duration="2.83" data-track-index="5"></audio>
+
+
+      <!-- ════════ SOUND EFFECTS (premium kit) ════════ -->
+      <audio id="sfx1" class="clip" src="sfx/pop.wav" data-start="0.6" data-duration="0.3" data-track-index="8" data-volume="0.5"></audio>
+      <audio id="sfx2" class="clip" src="sfx/pop.wav" data-start="0.82" data-duration="0.3" data-track-index="10" data-volume="0.5"></audio>
+      <audio id="sfx3" class="clip" src="sfx/pop.wav" data-start="1.04" data-duration="0.3" data-track-index="8" data-volume="0.5"></audio>
+      <audio id="sfx4" class="clip" src="sfx/tick.wav" data-start="1.5" data-duration="0.056" data-track-index="11" data-volume="0.3"></audio>
+      <audio id="sfx5" class="clip" src="sfx/whoosh.wav" data-start="5.21" data-duration="0.55" data-track-index="7" data-volume="0.22"></audio>
+      <audio id="sfx6" class="clip" src="sfx/pop.wav" data-start="5.71" data-duration="0.3" data-track-index="8" data-volume="0.5"></audio>
+      <audio id="sfx7" class="clip" src="sfx/pop.wav" data-start="5.87" data-duration="0.3" data-track-index="10" data-volume="0.5"></audio>
+      <audio id="sfx8" class="clip" src="sfx/pop.wav" data-start="6.03" data-duration="0.3" data-track-index="8" data-volume="0.5"></audio>
+      <audio id="sfx9" class="clip" src="sfx/whoosh.wav" data-start="6.81" data-duration="0.55" data-track-index="7" data-volume="0.4"></audio>
+      <audio id="sfx10" class="clip" src="sfx/whoosh.wav" data-start="7.41" data-duration="0.55" data-track-index="7" data-volume="0.4"></audio>
+      <audio id="sfx11" class="clip" src="sfx/whoosh.wav" data-start="12.14" data-duration="0.55" data-track-index="7" data-volume="0.22"></audio>
+      <audio id="sfx12" class="clip" src="sfx/pop.wav" data-start="14.14" data-duration="0.3" data-track-index="8" data-volume="0.6"></audio>
+      <audio id="sfx13" class="clip" src="sfx/pop.wav" data-start="16.34" data-duration="0.3" data-track-index="10" data-volume="0.6"></audio>
+      <audio id="sfx14" class="clip" src="sfx/pop.wav" data-start="18.34" data-duration="0.3" data-track-index="8" data-volume="0.6"></audio>
+      <audio id="sfx15" class="clip" src="sfx/whoosh.wav" data-start="19.95" data-duration="0.55" data-track-index="7" data-volume="0.22"></audio>
+      <audio id="sfx16" class="clip" src="sfx/whoosh.wav" data-start="22.35" data-duration="0.55" data-track-index="7" data-volume="0.5"></audio>
+      <audio id="sfx17" class="clip" src="sfx/tick.wav" data-start="23.85" data-duration="0.056" data-track-index="11" data-volume="0.4"></audio>
+      <audio id="sfx18" class="clip" src="sfx/whoosh.wav" data-start="25.67" data-duration="0.55" data-track-index="7" data-volume="0.22"></audio>
+      <audio id="sfx19" class="clip" src="sfx/pop.wav" data-start="26.37" data-duration="0.3" data-track-index="8" data-volume="0.55"></audio>
+      <audio id="sfx20" class="clip" src="sfx/pop.wav" data-start="27.07" data-duration="0.3" data-track-index="10" data-volume="0.55"></audio>
+      <audio id="sfx21" class="clip" src="sfx/pop.wav" data-start="27.77" data-duration="0.3" data-track-index="8" data-volume="0.55"></audio>
+      <audio id="sfx22" class="clip" src="sfx/whoosh.wav" data-start="29.07" data-duration="0.55" data-track-index="7" data-volume="0.45"></audio>
+      <audio id="sfx23" class="clip" src="sfx/whoosh.wav" data-start="30.17" data-duration="0.55" data-track-index="7" data-volume="0.45"></audio>
+      <audio id="sfx24" class="clip" src="sfx/whoosh.wav" data-start="31.27" data-duration="0.55" data-track-index="7" data-volume="0.45"></audio>
+      <audio id="sfx25" class="clip" src="sfx/whoosh.wav" data-start="34.18" data-duration="0.55" data-track-index="7" data-volume="0.22"></audio>
+      <audio id="sfx26" class="clip" src="sfx/tick.wav" data-start="35.18" data-duration="0.056" data-track-index="11" data-volume="0.3"></audio>
+      <audio id="sfx27" class="clip" src="sfx/tick.wav" data-start="35.4" data-duration="0.056" data-track-index="11" data-volume="0.3"></audio>
+      <audio id="sfx28" class="clip" src="sfx/tick.wav" data-start="35.62" data-duration="0.056" data-track-index="11" data-volume="0.3"></audio>
+      <audio id="sfx29" class="clip" src="sfx/tick.wav" data-start="36.48" data-duration="0.056" data-track-index="11" data-volume="0.3"></audio>
+      <audio id="sfx30" class="clip" src="sfx/tick.wav" data-start="36.58" data-duration="0.056" data-track-index="11" data-volume="0.3"></audio>
+      <audio id="sfx31" class="clip" src="sfx/tick.wav" data-start="36.68" data-duration="0.056" data-track-index="11" data-volume="0.3"></audio>
+      <audio id="sfx32" class="clip" src="sfx/tick.wav" data-start="36.78" data-duration="0.056" data-track-index="11" data-volume="0.3"></audio>
+      <audio id="sfx33" class="clip" src="sfx/whoosh.wav" data-start="40.37" data-duration="0.55" data-track-index="7" data-volume="0.22"></audio>
+      <audio id="sfx34" class="clip" src="sfx/tick.wav" data-start="40.87" data-duration="0.056" data-track-index="11" data-volume="0.4"></audio>
+      <audio id="sfx35" class="clip" src="sfx/tick.wav" data-start="41.03" data-duration="0.056" data-track-index="11" data-volume="0.4"></audio>
+      <audio id="sfx36" class="clip" src="sfx/tick.wav" data-start="41.19" data-duration="0.056" data-track-index="11" data-volume="0.4"></audio>
+      <audio id="sfx37" class="clip" src="sfx/tick.wav" data-start="41.35" data-duration="0.056" data-track-index="11" data-volume="0.4"></audio>
+      <audio id="sfx38" class="clip" src="sfx/tick.wav" data-start="41.51" data-duration="0.056" data-track-index="11" data-volume="0.4"></audio>
+      <audio id="sfx39" class="clip" src="sfx/whoosh.wav" data-start="44" data-duration="0.55" data-track-index="7" data-volume="0.22"></audio>
+      <audio id="sfx40" class="clip" src="sfx/chime.wav" data-start="44" data-duration="1.45" data-track-index="9" data-volume="0.34"></audio>
+      <audio id="sfx41" class="clip" src="sfx/boom.wav" data-start="44" data-duration="0.65" data-track-index="12" data-volume="0.18"></audio>
+
+      <!-- ════════ PERSISTENT OVERLAYS ════════ -->
+      <img id="watermark" class="clip" src="assets/logo-mark.svg" width="42" height="42" data-start="0" data-duration="47.38" data-track-index="3" />
+      <div id="chapter" class="clip" data-start="0" data-duration="47.38" data-track-index="4">
+        <div class="dots">
+          <div class="dot" data-i="0"></div><div class="dot" data-i="1"></div><div class="dot" data-i="2"></div><div class="dot" data-i="3"></div>
+          <div class="dot" data-i="4"></div><div class="dot" data-i="5"></div><div class="dot" data-i="6"></div><div class="dot" data-i="7"></div>
+        </div>
+        <div class="labels">
+          <div class="label" data-i="0">01 / 08 · Concept</div>
+          <div class="label" data-i="1">02 / 08 · LIFO</div>
+          <div class="label" data-i="2">03 / 08 · Push</div>
+          <div class="label" data-i="3">04 / 08 · Pop</div>
+          <div class="label" data-i="4">05 / 08 · Order</div>
+          <div class="label" data-i="5">06 / 08 · Java</div>
+          <div class="label" data-i="6">07 / 08 · Uses</div>
+          <div class="label" data-i="7">08 / 08 · Recap</div>
+        </div>
+      </div>
+
+      <!-- ════════ WORD-BY-WORD CAPTIONS ════════ -->
+      <div id="captions" class="clip" data-start="0" data-duration="47.38" data-track-index="6"></div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const ease = "power3.out";
+      const ST = [1180, 1074, 968, 862, 756]; // slot tops, bottom-up
+      const NS = "http://www.w3.org/2000/svg";
+
+      function mkBlock(parentId, slotIdx, label, cls) {
+        const p = document.getElementById(parentId);
+        const b = document.createElement("div");
+        b.className = "sblock" + (cls ? " " + cls : "");
+        b.style.top = ST[slotIdx] + "px";
+        b.textContent = label || "";
+        p.appendChild(b);
+        return b;
+      }
+      function arrow(svgId, x1, y1, x2, y2, color, at, dur) {
+        const svg = document.getElementById(svgId);
+        const len = Math.hypot(x2 - x1, y2 - y1);
+        const line = document.createElementNS(NS, "line");
+        line.setAttribute("x1", x1); line.setAttribute("y1", y1);
+        line.setAttribute("x2", x2); line.setAttribute("y2", y2);
+        line.setAttribute("stroke", color); line.setAttribute("stroke-width", 5);
+        line.style.strokeDasharray = len; line.style.strokeDashoffset = len;
+        svg.appendChild(line);
+        const ang = Math.atan2(y2 - y1, x2 - x1), ah = 16;
+        const a1x = x2 - ah * Math.cos(ang - 0.5), a1y = y2 - ah * Math.sin(ang - 0.5);
+        const a2x = x2 - ah * Math.cos(ang + 0.5), a2y = y2 - ah * Math.sin(ang + 0.5);
+        const head = document.createElementNS(NS, "polyline");
+        head.setAttribute("points", `${a1x},${a1y} ${x2},${y2} ${a2x},${a2y}`);
+        head.setAttribute("stroke", color); head.setAttribute("stroke-width", 5);
+        head.style.opacity = 0;
+        svg.appendChild(head);
+        tl.fromTo(line, { strokeDashoffset: len }, { strokeDashoffset: 0, duration: dur, ease: "power2.inOut" }, at);
+        tl.to(head, { opacity: 1, duration: 0.16 }, at + dur * 0.65);
+      }
+      const slotCenterY = (i) => ST[i] + 46;
+
+      // ════════ SCENE 1 ════════
+      const b1 = [mkBlock("s1-stack", 0, ""), mkBlock("s1-stack", 1, ""), mkBlock("s1-stack", 2, "")];
+      const top1 = document.createElement("div");
+      top1.className = "topchip dark s1-topchip";
+      top1.textContent = "TOP";
+      top1.style.top = (slotCenterY(2) - 20) + "px";
+      document.getElementById("s1-stack").appendChild(top1);
+      tl.from("#s1", { opacity: 0, duration: 0.45 }, 0);
+      tl.from(".s1-kick", { y: -10, opacity: 0, duration: 0.5, ease }, 0.1);
+      tl.from(".s1-head", { y: 30, opacity: 0, duration: 0.6, ease }, 0.22);
+      b1.forEach((b, i) => tl.from(b, { y: 60, opacity: 0, scale: 0.85, duration: 0.5, ease: "back.out(1.4)", transformOrigin: "center" }, 0.6 + i * 0.22));
+      tl.from(".s1-topchip", { x: 18, opacity: 0, duration: 0.45, ease }, 1.5);
+      tl.from(".s1-bottomtag", { opacity: 0, duration: 0.5 }, 1.8);
+
+      // ════════ SCENE 2 (start 7.2) ════════
+      const s2 = 5.21;
+      const b2 = [mkBlock("s2-stack", 0, ""), mkBlock("s2-stack", 1, ""), mkBlock("s2-stack", 2, "")];
+      tl.from("#s2", { opacity: 0, duration: 0.45 }, s2);
+      tl.from(".s2-kick", { y: -10, opacity: 0, duration: 0.5, ease }, s2 + 0.1);
+      tl.from(".s2-head", { y: 30, opacity: 0, duration: 0.6, ease }, s2 + 0.22);
+      b2.forEach((b, i) => tl.from(b, { y: 50, opacity: 0, duration: 0.45, ease: "back.out(1.3)", transformOrigin: "center" }, s2 + 0.5 + i * 0.16));
+      arrow("s2-arrows", 430, 860, 430, 962, "#7f56d9", s2 + 1.6, 0.45);
+      arrow("s2-arrows", 650, 962, 650, 860, "#7f56d9", s2 + 2.2, 0.45);
+      tl.from(".s2-push", { y: -12, opacity: 0, duration: 0.4, ease }, s2 + 1.7);
+      tl.from(".s2-pop", { y: 12, opacity: 0, duration: 0.4, ease }, s2 + 2.3);
+      tl.from(".s2-only", { opacity: 0, y: 10, duration: 0.5, ease }, s2 + 3.1);
+
+      // ════════ SCENE 3 — push (start 15.2) ════════
+      const s3 = 12.14;
+      const b3 = [mkBlock("s3-stack", 0, "10"), mkBlock("s3-stack", 1, "20"), mkBlock("s3-stack", 2, "30")];
+      tl.from("#s3", { opacity: 0, duration: 0.45 }, s3);
+      tl.from(".s3-kick", { y: -10, opacity: 0, duration: 0.5, ease }, s3 + 0.1);
+      tl.from(".s3-head", { y: 30, opacity: 0, duration: 0.6, ease }, s3 + 0.22);
+      tl.from(".s3-code", { y: 22, opacity: 0, duration: 0.5, ease }, s3 + 0.5);
+      const pushVals = ["10", "20", "30"];
+      const pushTimes = [2.0, 4.2, 6.2];
+      b3.forEach((b, i) => {
+        tl.from(b, { y: -260, opacity: 0, duration: 0.55, ease: "back.out(1.3)" }, s3 + pushTimes[i]);
+        tl.to(".s3-codeval", { duration: 0, onComplete: () => { const e = document.querySelector(".s3-codeval"); if (e) e.textContent = pushVals[i]; } }, s3 + pushTimes[i] - 0.25);
+        tl.fromTo(".s3-code", { scale: 1 }, { scale: 1.04, duration: 0.12, yoyo: true, repeat: 1, transformOrigin: "left center" }, s3 + pushTimes[i] - 0.25);
+        tl.to(".s3-top", { top: (slotCenterY(i) - 20), duration: 0.4, ease: "power2.out" }, s3 + pushTimes[i]);
+      });
+      tl.to(".s3-top", { opacity: 1, duration: 0.3 }, s3 + pushTimes[0]);
+
+      // ════════ SCENE 4 — pop & peek (start 24.2) ════════
+      const s4 = 19.95;
+      const b4 = [mkBlock("s4-stack", 0, "10"), mkBlock("s4-stack", 1, "20"), mkBlock("s4-stack", 2, "30")];
+      tl.from("#s4", { opacity: 0, duration: 0.45 }, s4);
+      tl.from(".s4-kick", { y: -10, opacity: 0, duration: 0.5, ease }, s4 + 0.1);
+      tl.from(".s4-head", { y: 30, opacity: 0, duration: 0.6, ease }, s4 + 0.22);
+      b4.forEach((b, i) => tl.from(b, { y: 40, opacity: 0, duration: 0.4, ease: "back.out(1.3)", transformOrigin: "center" }, s4 + 0.5 + i * 0.14));
+      // pop top (30) flies up and returns
+      tl.to(b4[2], { y: -300, opacity: 0, duration: 0.55, ease: "power2.in" }, s4 + 2.4);
+      tl.fromTo(".s4-pop", { opacity: 0, x: 18 }, { opacity: 1, x: 0, duration: 0.4, ease: "back.out(1.5)" }, s4 + 2.7);
+      // peek new top (20) — highlight, stays
+      tl.to(b4[1], { scale: 1.06, duration: 0.3, yoyo: true, repeat: 1, ease: "sine.inOut", transformOrigin: "center" }, s4 + 3.9);
+      tl.fromTo(".s4-peek", { opacity: 0, x: 18 }, { opacity: 1, x: 0, duration: 0.4, ease: "back.out(1.5)" }, s4 + 4.0);
+
+      // ════════ SCENE 5 — reverse order (start 31.2) ════════
+      const s5 = 25.67;
+      const b5 = [mkBlock("s5-stack", 0, "1"), mkBlock("s5-stack", 1, "2"), mkBlock("s5-stack", 2, "3")];
+      tl.from("#s5", { opacity: 0, duration: 0.45 }, s5);
+      tl.from(".s5-kick", { y: -10, opacity: 0, duration: 0.5, ease }, s5 + 0.1);
+      tl.from(".s5-head", { y: 30, opacity: 0, duration: 0.6, ease }, s5 + 0.22);
+      tl.from(".s5-inlabel", { opacity: 0, y: 10, duration: 0.4, ease }, s5 + 0.4);
+      // push 1,2,3
+      const inT = [0.7, 1.4, 2.1];
+      b5.forEach((b, i) => tl.from(b, { y: -260, opacity: 0, duration: 0.5, ease: "back.out(1.3)" }, s5 + inT[i]));
+      // pop 3,2,1 -> output row (out0=3, out1=2, out2=1)
+      const popOrder = [2, 1, 0];
+      const popT = [3.4, 4.5, 5.6];
+      popOrder.forEach((bi, k) => {
+        tl.to(b5[bi], { y: -300, opacity: 0, duration: 0.5, ease: "power2.in" }, s5 + popT[k]);
+        tl.fromTo(".s5-out" + k, { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.6)", transformOrigin: "center" }, s5 + popT[k] + 0.25);
+      });
+
+      // ════════ SCENE 6 — Java API (start 40.2) ════════
+      const s6 = 34.18;
+      tl.from("#s6", { opacity: 0, duration: 0.45 }, s6);
+      tl.from(".s6-kick", { y: -10, opacity: 0, duration: 0.5, ease }, s6 + 0.1);
+      tl.from(".s6-head", { y: 30, opacity: 0, duration: 0.6, ease }, s6 + 0.22);
+      tl.from(".s6-code", { y: 24, opacity: 0, duration: 0.5, ease }, s6 + 0.5);
+      tl.from(".s6-line", { x: -18, opacity: 0, duration: 0.4, stagger: 0.22, ease }, s6 + 1.0);
+      tl.from(".s6-methods .method", { y: 14, opacity: 0, scale: 0.85, duration: 0.4, stagger: 0.1, ease: "back.out(1.5)", transformOrigin: "center" }, s6 + 2.3);
+      tl.from(".s6-note", { opacity: 0, y: 10, duration: 0.5, ease }, s6 + 3.3);
+
+      // ════════ SCENE 7 — uses (start 47.4) ════════
+      const s7 = 40.37;
+      tl.from("#s7", { opacity: 0, duration: 0.45 }, s7);
+      tl.from(".s7-kick", { y: -10, opacity: 0, duration: 0.5, ease }, s7 + 0.1);
+      tl.from(".s7-head", { y: 30, opacity: 0, duration: 0.6, ease }, s7 + 0.22);
+      tl.from(".s7-use", { x: -24, opacity: 0, duration: 0.4, stagger: 0.16, ease: "back.out(1.3)" }, s7 + 0.5);
+
+      // ════════ OUTRO (start 50.6) ════════
+      const s8 = 44;
+      tl.from("#s8", { opacity: 0, duration: 0.45 }, s8);
+      tl.fromTo(".s8-logo", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(1.7)", transformOrigin: "center" }, s8);
+      tl.from(".s8-t1", { y: 22, opacity: 0, duration: 0.6, ease }, s8 + 0.55);
+      tl.from(".s8-t2", { y: 16, opacity: 0, duration: 0.5, ease }, s8 + 1.0);
+
+      // ════════ PERSISTENT: chapter indicator ════════
+      const CH_T = [0, 5.21, 12.14, 19.95, 25.67, 34.18, 40.37, 44];
+      const darkCh = [true, false, false, true, false, false, true, true];
+      gsap.set(".label[data-i='0']", { opacity: 1 });
+      gsap.set(".dot[data-i='0']", { width: 34, backgroundColor: "#7f56d9" });
+      for (let i = 1; i < CH_T.length; i++) {
+        const t = CH_T[i];
+        const inactiveDot = darkCh[i] ? "rgba(189,168,243,0.4)" : "rgba(142,150,179,0.45)";
+        const labelCol = darkCh[i] ? "rgba(189,168,243,0.95)" : "#5f6885";
+        tl.to(`.label[data-i='${i - 1}']`, { opacity: 0, duration: 0.3 }, t);
+        tl.to(`.label[data-i='${i}']`, { opacity: 1, color: labelCol, duration: 0.3 }, t);
+        tl.to(`.dot[data-i='${i - 1}']`, { width: 9, backgroundColor: inactiveDot, duration: 0.3 }, t);
+        tl.to(`.dot[data-i='${i}']`, { width: 34, backgroundColor: "#7f56d9", duration: 0.3 }, t);
+      }
+      tl.from("#watermark", { opacity: 0, duration: 0.5 }, 0);
+
+      // ════════ WORD-BY-WORD CAPTIONS ════════
+      (function buildCaptions() {
+        const WORDS = window.CAPTION_WORDS || [];
+        const DARK = { s1: 1, s4: 1, s7: 1, s8: 1 };
+        const wrap = document.getElementById("captions");
+        const groups = [];
+        let cur = [];
+        for (let i = 0; i < WORDS.length; i++) {
+          const w = WORDS[i], nx = WORDS[i + 1];
+          cur.push(w);
+          const endsSentence = /[.!?]$/.test(w.t);
+          const gap = nx ? nx.s - w.e : Infinity;
+          const sceneChange = nx ? nx.sc !== w.sc : true;
+          if (endsSentence || sceneChange || gap > 0.45 || cur.length >= 3 || !nx) { groups.push(cur); cur = []; }
+        }
+        groups.forEach((g, gi) => {
+          const dark = !!DARK[g[0].sc];
+          const baseCol = dark ? "#ffffff" : "#151a2d";
+          const actCol = dark ? "#bda8f3" : "#7f56d9";
+          const cg = document.createElement("div");
+          cg.className = "cg"; cg.id = "cg-" + gi;
+          g.forEach((w, wj) => {
+            const sp = document.createElement("span");
+            sp.className = "w"; sp.id = "cg-" + gi + "-w" + wj;
+            sp.textContent = w.t; sp.style.color = baseCol;
+            cg.appendChild(sp);
+          });
+          wrap.appendChild(cg);
+          const gStart = g[0].s, gEnd = g[g.length - 1].e, next = groups[gi + 1];
+          const appearAt = Math.max(0, gStart - 0.08);
+          const killAt = next ? Math.min(gEnd + 0.22, next[0].s - 0.12) : Math.min(gEnd + 0.3, 47.36);
+          tl.fromTo("#cg-" + gi, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.22, ease: "back.out(1.4)" }, appearAt);
+          g.forEach((w, wj) => {
+            const sel = "#cg-" + gi + "-w" + wj;
+            tl.to(sel, { color: actCol, scale: 1.12, duration: 0.1, ease: "power2.out" }, w.s);
+            tl.to(sel, { color: baseCol, scale: 1.0, duration: 0.12, ease: "power2.in" }, Math.max(w.e, w.s + 0.12));
+          });
+          tl.to("#cg-" + gi, { opacity: 0, y: -8, duration: 0.14, ease: "power2.in" }, killAt - 0.14);
+          tl.set("#cg-" + gi, { opacity: 0, visibility: "hidden" }, killAt);
+        });
+      })();
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>
