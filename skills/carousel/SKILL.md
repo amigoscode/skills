@@ -309,22 +309,27 @@ Write each caption file with the Write tool directly to the output directory.
 
 ### Step 6: Generate PDF
 
-LinkedIn carousels upload as PDF documents. Combine the slide PNGs:
+LinkedIn carousels upload as PDF documents. **Always produce `carousel.pdf` — never
+skip it.** Use ImageMagick if present; otherwise fall back to `img2pdf`, installing
+it with `pip` (no sudo or system package manager needed):
 
 ```bash
-convert <outputDir>/0*.png <outputDir>/1*.png <outputDir>/carousel.pdf
-```
-
-If ImageMagick is unavailable, use `img2pdf`:
-
-```bash
-pip3 install img2pdf 2>/dev/null; python3 -c "
+if command -v convert >/dev/null 2>&1 || command -v magick >/dev/null 2>&1; then
+  CONV=$(command -v magick || command -v convert)
+  "$CONV" <outputDir>/0*.png <outputDir>/1*.png <outputDir>/carousel.pdf
+else
+  python3 -c "import img2pdf" 2>/dev/null || pip3 install img2pdf || pip install img2pdf
+  python3 -c "
 import img2pdf, glob, os
 imgs = sorted(glob.glob(os.path.join('<outputDir>', '*.png')))
 with open(os.path.join('<outputDir>', 'carousel.pdf'), 'wb') as f:
     f.write(img2pdf.convert(imgs))
 "
+fi
 ```
+
+`img2pdf` is the reliable fallback because it installs from PyPI without root. Only
+report the PDF as skipped if even `pip install img2pdf` fails.
 
 ### Step 7: Generate Beat-Synced MP4s and GIF
 
