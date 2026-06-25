@@ -27,7 +27,7 @@ for (const id of ids) {
   h = h.replace(new RegExp(`(<div id="${id}" class="scene clip" data-start=")[^"]*(" data-duration=")[^"]*(")`), `$1${starts[id]}$2${durs[id]}$3`);
   const n = id.slice(1);
   h = h.replace(new RegExp(`(<audio id="vo${n}"[^>]*?data-start=")[^"]*("[^>]*?data-duration=")[^"]*(")`), `$1${starts[id]}$2${+vodur[id].toFixed(2)}$3`);
-  if (id !== 's1') h = h.replace(new RegExp(`(const ${id} = )[0-9.]+(;)`), `$1${starts[id]}$2`);
+  if (id !== 's1') h = h.replace(new RegExp(`(const ${id} = )[0-9.]+`), `$1${starts[id]}`);
 }
 h = h.replace(/const CH_T = \[[^\]]*\];/, `const CH_T = [${ids.map(id => starts[id]).join(', ')}];`);
 h = h.replace(/(data-composition-id="main" data-start="0" data-duration=")[^"]*(")/, `$1${TOTAL}$2`);
@@ -38,7 +38,8 @@ h = h.replace(/Math\.min\(gEnd \+ 0\.3, [0-9.]+\)/, `Math.min(gEnd + 0.3, ${(TOT
 const events = [];
 const abs = (scene, at) => scene === 'abs' ? at : +(starts[scene] + at).toFixed(3);
 // auto transition whoosh at each scene start (except the first)
-if (cfg.autoTransitions !== false) ids.slice(1).forEach(id => events.push({ sfx: 'whoosh', t: starts[id], vol: SFX_VOL.transition }));
+const LEAD = cfg.transitionLead ?? 0.2; // start the swoosh slightly before the cut so it peaks on it
+  if (cfg.autoTransitions !== false) ids.slice(1).forEach(id => events.push({ sfx: 'whoosh', t: Math.max(0, +(starts[id] - LEAD).toFixed(3)), vol: SFX_VOL.transition }));
 let userEvents = [];
 try { userEvents = JSON.parse(fs.readFileSync('vo/sfx-events.json', 'utf8')); } catch {}
 for (const e of userEvents) events.push({ sfx: e.sfx, t: abs(e.scene, e.at ?? 0), vol: e.vol ?? SFX_VOL[e.sfx], track: e.track });

@@ -2,12 +2,14 @@
 <!--
   Amigoscode explainer-video composition skeleton (1080x1920, ~8 scenes).
   Fill in: scene CONTENT slots, per-scene GSAP beats, chapter labels, VO lines, sfx-events.
-  Conventions REQUIRED by patch-time.mjs (do not rename):
-    - scenes: <div id="sN" class="scene clip" ...>  (N = 1..8)
-    - audio:  <audio id="voN" ... src="vo/sN.wav" ... data-track-index="5">
-    - script: `const sN = 0;` base per scene (s1 is absolute 0, has no const)
+  Conventions REQUIRED by patch-time.mjs (do not rename). Described in words so the linter
+  does not parse an example tag's path as a real missing asset:
+    - scenes: a div with id sN, classes "scene clip" (N = 1..8)
+    - audio: one voiceover audio element per scene, id voN, pointing at the vo wav for that scene, on track index 5
+    - script: a separate `const sN = ...;` statement per scene (s1 is absolute 0 and has no const)
     - `const CH_T = [...]`, the SFX_START/SFX_END markers, the caption clamp Math.min(gEnd+0.3, X)
-  Tracks: scenes 1-2, watermark 3, chapter 4, VO 5, SFX whoosh 7 / pop 8+10 / chime 9 / tick 11 / boom 12.
+  Tracks: scenes 1-2, watermark 3, chapter 4, VO 5, transition whoosh 7 (auto at each cut — the only sound by default).
+  Motion rule: no scene sits still. Use flow() for connectors and pulse()/loops (finite repeat) so each scene moves until it cuts.
 -->
 <html lang="en">
   <head>
@@ -153,6 +155,23 @@
         tl.fromTo(line, { strokeDashoffset: len }, { strokeDashoffset: 0, duration: dur, ease: "power2.inOut" }, at);
         tl.to(head, { opacity: 1, duration: 0.16 }, at + dur * 0.65);
       }
+      // flow(): connector whose dots march continuously toward the arrowhead (diagrams.net style).
+      // Use for every relationship line so diagrams never go static. `rep` = finite repeat count (~scene length / 0.6).
+      function flow(svgId, x1, y1, x2, y2, color, at, rep) {
+        const svg = document.getElementById(svgId);
+        const line = document.createElementNS(NS, "line");
+        line.setAttribute("x1", x1); line.setAttribute("y1", y1); line.setAttribute("x2", x2); line.setAttribute("y2", y2);
+        line.setAttribute("stroke", color); line.setAttribute("stroke-width", 5); line.setAttribute("stroke-linecap", "round");
+        line.style.strokeDasharray = "0.1 22"; svg.appendChild(line);
+        const ang = Math.atan2(y2 - y1, x2 - x1), ah = 15;
+        const head = document.createElementNS(NS, "polyline");
+        head.setAttribute("points", `${x2 - ah * Math.cos(ang - 0.5)},${y2 - ah * Math.sin(ang - 0.5)} ${x2},${y2} ${x2 - ah * Math.cos(ang + 0.5)},${y2 - ah * Math.sin(ang + 0.5)}`);
+        head.setAttribute("stroke", color); head.setAttribute("stroke-width", 5); head.setAttribute("fill", "none"); svg.appendChild(head);
+        tl.fromTo([line, head], { opacity: 0 }, { opacity: 1, duration: 0.35 }, at);
+        tl.to(line, { strokeDashoffset: -22, duration: 0.6, ease: "none", repeat: rep || 30 }, at);
+      }
+      // pulse(): breathe an element with a finite repeat so it never freezes on screen.
+      function pulse(sel, at, sc, rep) { tl.to(sel, { scale: sc || 1.04, duration: 0.75, ease: "sine.inOut", yoyo: true, repeat: rep || 16, transformOrigin: "center" }, at); }
       // optional stack-block helper: append a brand block at slot index
       function mkBlock(parentId, slotIdx, label, cls) {
         const b = document.createElement("div"); b.className = "sblock" + (cls ? " " + cls : "");
@@ -162,44 +181,45 @@
       // ════════ SCENE TIMELINES ════════
       // Author entrances here. Each scene: fade the scene in, then gsap.from() every element.
       // Use absolute times for s1, and `sN + offset` for scenes 2..8 (the const sN are set by patch-time).
-      const s2 = 5.6, s3 = 11.9, s4 = 18.2, s5 = 24.5, s6 = 31.2, s7 = 37.9, s8 = 41.1;
+      // NOTE: each must be its own `const sN = …;` statement (not one comma-separated declaration) so patch-time can rewrite every value.
+      const s2 = 5.6; const s3 = 11.9; const s4 = 18.2; const s5 = 24.5; const s6 = 31.2; const s7 = 37.9; const s8 = 41.1;
 
-      tl.from("#s1", { opacity: 0, duration: 0.45 }, 0);
+      tl.fromTo("#s1", { opacity: 0 }, { opacity: 1, duration: 0.45 }, 0);
       tl.from(".s1-kick", { y: -10, opacity: 0, duration: 0.5, ease }, 0.1);
       tl.from(".s1-head", { y: 30, opacity: 0, duration: 0.6, ease }, 0.22);
       // SCENE 1 BEATS
 
-      tl.from("#s2", { opacity: 0, duration: 0.45 }, s2);
+      tl.fromTo("#s2", { opacity: 0 }, { opacity: 1, duration: 0.45 }, s2);
       tl.from(".s2-kick", { y: -10, opacity: 0, duration: 0.5, ease }, s2 + 0.1);
       tl.from(".s2-head", { y: 30, opacity: 0, duration: 0.6, ease }, s2 + 0.22);
       // SCENE 2 BEATS
 
-      tl.from("#s3", { opacity: 0, duration: 0.45 }, s3);
+      tl.fromTo("#s3", { opacity: 0 }, { opacity: 1, duration: 0.45 }, s3);
       tl.from(".s3-kick", { y: -10, opacity: 0, duration: 0.5, ease }, s3 + 0.1);
       tl.from(".s3-head", { y: 30, opacity: 0, duration: 0.6, ease }, s3 + 0.22);
       // SCENE 3 BEATS
 
-      tl.from("#s4", { opacity: 0, duration: 0.45 }, s4);
+      tl.fromTo("#s4", { opacity: 0 }, { opacity: 1, duration: 0.45 }, s4);
       tl.from(".s4-kick", { y: -10, opacity: 0, duration: 0.5, ease }, s4 + 0.1);
       tl.from(".s4-head", { y: 30, opacity: 0, duration: 0.6, ease }, s4 + 0.22);
       // SCENE 4 BEATS
 
-      tl.from("#s5", { opacity: 0, duration: 0.45 }, s5);
+      tl.fromTo("#s5", { opacity: 0 }, { opacity: 1, duration: 0.45 }, s5);
       tl.from(".s5-kick", { y: -10, opacity: 0, duration: 0.5, ease }, s5 + 0.1);
       tl.from(".s5-head", { y: 30, opacity: 0, duration: 0.6, ease }, s5 + 0.22);
       // SCENE 5 BEATS
 
-      tl.from("#s6", { opacity: 0, duration: 0.45 }, s6);
+      tl.fromTo("#s6", { opacity: 0 }, { opacity: 1, duration: 0.45 }, s6);
       tl.from(".s6-kick", { y: -10, opacity: 0, duration: 0.5, ease }, s6 + 0.1);
       tl.from(".s6-head", { y: 30, opacity: 0, duration: 0.6, ease }, s6 + 0.22);
       // SCENE 6 BEATS
 
-      tl.from("#s7", { opacity: 0, duration: 0.45 }, s7);
+      tl.fromTo("#s7", { opacity: 0 }, { opacity: 1, duration: 0.45 }, s7);
       tl.from(".s7-kick", { y: -10, opacity: 0, duration: 0.5, ease }, s7 + 0.1);
       tl.from(".s7-head", { y: 30, opacity: 0, duration: 0.6, ease }, s7 + 0.22);
       // SCENE 7 BEATS
 
-      tl.from("#s8", { opacity: 0, duration: 0.45 }, s8);
+      tl.fromTo("#s8", { opacity: 0 }, { opacity: 1, duration: 0.45 }, s8);
       tl.fromTo(".s8-logo", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(1.7)", transformOrigin: "center" }, s8);
       tl.from(".s8-t1", { y: 22, opacity: 0, duration: 0.6, ease }, s8 + 0.55);
       tl.from(".s8-t2", { y: 16, opacity: 0, duration: 0.5, ease }, s8 + 1.0);
