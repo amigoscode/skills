@@ -13,15 +13,7 @@
     {
       "name": "amigoscode",
       "source": "./",
-      "strict": true,
-      "description": "Branded explainer videos, educational infographics (HOW X WORKS diagrams), LinkedIn carousels, X-style quote cards, and an autonomous LinkedIn poster.",
-      "skills": [
-        "./skills/carousel",
-        "./skills/explainer-video",
-        "./skills/infographic",
-        "./skills/linkedin-poster",
-        "./skills/x-card"
-      ]
+      "description": "Branded explainer videos, educational infographics (HOW X WORKS diagrams), LinkedIn carousels, X-style quote cards, and an autonomous LinkedIn poster."
     }
   ]
 }

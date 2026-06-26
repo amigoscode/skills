@@ -125,26 +125,33 @@ function updateReadme(skills) {
 }
 
 /**
- * Update marketplace.json with skills list
+ * Reconcile marketplace.json with the skills directory.
+ *
+ * The plugin entry intentionally does NOT carry an explicit `skills` array:
+ * the plugin uses source "./" and Claude Code auto-discovers the skills/
+ * directory. Listing skills here as well makes both plugin.json and the
+ * marketplace entry declare the same components, which Claude Code rejects as
+ * "conflicting manifests" on install. So if a stale `skills` (or other
+ * component) array is present, strip it; otherwise leave the file untouched.
  */
 function updateMarketplace(skills) {
   const marketplace = JSON.parse(fs.readFileSync(MARKETPLACE_FILE, "utf8"));
   const plugin = marketplace.plugins[0];
-  const existingSkills = plugin.skills || [];
-  const currentSkills = skills.map((s) => s.path);
 
-  if (JSON.stringify(currentSkills) === JSON.stringify(existingSkills)) {
+  const componentKeys = ["skills", "commands", "agents", "hooks"];
+  const present = componentKeys.filter((k) => k in plugin);
+
+  if (present.length === 0) {
     return { updated: false };
   }
 
-  plugin.skills = currentSkills;
+  for (const k of present) {
+    delete plugin[k];
+  }
 
   fs.writeFileSync(MARKETPLACE_FILE, JSON.stringify(marketplace, null, 2) + "\n");
 
-  const added = currentSkills.filter((s) => !existingSkills.includes(s));
-  const removed = existingSkills.filter((s) => !currentSkills.includes(s));
-
-  return { updated: true, added, removed };
+  return { updated: true, removed: present };
 }
 
 function main() {
@@ -159,13 +166,9 @@ function main() {
   }
 
   if (marketplaceResult.updated) {
-    if (marketplaceResult.added.length) {
-      console.log(`Added: ${marketplaceResult.added.join(", ")}`);
-    }
-    if (marketplaceResult.removed.length) {
-      console.log(`Removed: ${marketplaceResult.removed.join(", ")}`);
-    }
-    console.log(`Updated marketplace.json (${skills.length} skills)`);
+    console.log(
+      `Stripped stale component arrays from marketplace.json: ${marketplaceResult.removed.join(", ")}`
+    );
   }
 
   if (readmeUpdated) {
