@@ -98,6 +98,16 @@ Note: Gemini may save as `.jpg` instead of `.png`. That is fine, just use whatev
 
 ### Step 4: Create the branded HTML
 
+**CRITICAL — use the LIVE config, never the bundled defaults.** Before writing any
+HTML, re-read the values you loaded in Step 0 from
+`~/amigoscode-skills/infographic-config.json` and use those exact values for
+`footerText`, `logoPath`, and `personPhoto`. Do NOT copy the values from
+`SKILL_DIR/config.default.json` or from any example in this file. If the user's
+config sets `footerText` to a custom string, an empty `logoPath`, or a custom
+`personPhoto`, the output MUST reflect those. After building the HTML, verify each
+of the three values in the file matches the live config (and that empty values
+produced a removed element, not an empty attribute) before screenshotting.
+
 Read the template from `SKILL_DIR/assets/template.html` and create a copy in the output directory, replacing the placeholders:
 - `{{PERSON_PHOTO}}`: the author photo (see person photo rules below)
 - `{{ICON_PATH}}`: the tech icon (see icon rules below)
@@ -115,10 +125,12 @@ Person photo rules:
 - Read `personPhoto` from `config.json`. If it is a non-empty path AND the file exists, set `{{PERSON_PHOTO}}` to its absolute path (expand a leading `~` to the home directory) so the screenshot can resolve it.
 - **If `personPhoto` is empty/missing, or the file does not exist, REMOVE the whole `<div class="person-photo">...</div>` element.** Then the row is just icon → title.
 
-Icon rules:
-- Pick the appropriate tech icon URL (lobehub or devicon) for `{{ICON_PATH}}`.
-- **If the topic is generic/comparison with no specific technology icon**, set `{{ICON_PATH}}` to the absolute path of `logoPath` from `config.json` (the brand logo doubles as the fallback icon). Do not leave a default placeholder.
-- **Keep the icon whenever there is a source for it** (a real tech icon, or `logoPath` as the generic fallback). Only if the topic is generic AND `logoPath` is missing/empty (no icon source at all) do you remove the `<div class="tech-icon">` element.
+Icon rules — decide the icon source in this order, and NEVER emit an empty `src`:
+1. **Real tech icon**: if the topic maps to a specific technology, set `{{ICON_PATH}}` to its lobehub or devicon URL.
+2. **Generic topic, brand logo available**: if there is no specific tech icon AND `logoPath` is a non-empty path, set `{{ICON_PATH}}` to the absolute path of `logoPath` (the brand logo doubles as the fallback icon).
+3. **Generic topic, no brand logo**: if there is no specific tech icon AND `logoPath` is empty or missing, there is no icon source — **REMOVE the entire `<div class="tech-icon">...</div>` element.** Do NOT set `{{ICON_PATH}}` to an empty string; a `<img src="">` is a bug, not an acceptable fallback.
+
+Never leave the literal `{{ICON_PATH}}` placeholder and never render `src=""`. The only valid outcomes are a real icon URL, the absolute `logoPath`, or a fully removed `tech-icon` div.
 
 Title rules:
 - **If the full "HOW X WORKS" title is long (more than ~16 characters) and would collide with the icon, SHORTEN the on-image title instead of removing the icon.** Trim filler words: drop "HOW" and "WORKS/WORK" and any redundant words, keeping only the core subject so it fits on one line next to the icon.

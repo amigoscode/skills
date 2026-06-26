@@ -181,7 +181,7 @@ A failed post does not abort the batch — the script resets to the feed and con
 
 **Composer**
 
-- `button[name="Start a post"]` — opens composer.
+- `a[href="/preload/sharebox/"]` — opens composer (was `button[name="Start a post"]`; LinkedIn made it an anchor as of June 2026, with the old button role kept as a fallback).
 - `textbox[name=/Text editor for creating/]` — the contenteditable body.
 - `button[name="Post"]` (exact) — publishes immediately.
 - `button[name="Schedule post"]` — opens the schedule dialog.

@@ -185,7 +185,16 @@ async function openComposer(page: Page): Promise<void> {
   if (!page.url().includes("/feed")) {
     await page.goto("https://www.linkedin.com/feed/", { waitUntil: "domcontentloaded" });
   }
-  await page.getByRole("button", { name: "Start a post" }).first().click();
+  // LinkedIn changed "Start a post" from a <button> to an <a href="/preload/sharebox/">
+  // anchor (inner <div aria-label="Start a post">), so the button role times out
+  // (verified June 2026). Click the anchor first, fall back to the old button role
+  // in case the UI varies by account or rolls back.
+  const sharebox = page.locator('a[href="/preload/sharebox/"]').first();
+  try {
+    await sharebox.click({ timeout: 8000 });
+  } catch {
+    await page.getByRole("button", { name: "Start a post" }).first().click();
+  }
   await page.getByRole("dialog").first().waitFor({ state: "visible" });
 }
 
