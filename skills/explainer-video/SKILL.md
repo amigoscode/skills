@@ -16,7 +16,7 @@ Create a todo per step so nothing is skipped.
 
 ## Prerequisites
 
-- **Voice engine** (Step 0 picks one): either an **ELEVEN_LABS** API key (Creator tier or above for professional/cloned voices; export it or copy `.env.example` to `.env`) — OR the **free local Kokoro** engine, which needs no key (Python with `kokoro-onnx`/`soundfile`; model downloads on first run).
+- **Voice engine** (Step 0 picks one): either an **ELEVEN_LABS** API key (Creator tier or above for professional/cloned voices) — OR the **free local Kokoro** engine, which needs no key (Python with `kokoro-onnx`/`soundfile`; model downloads on first run). The `ELEVEN_LABS` key is resolved with this precedence: **shell environment** first, then the shared **`~/amigoscode-skills/.env`** (one key file used by every Amigoscode skill), then a local `.env` next to the script. The shared file is easiest because all skills pick it up.
 - **ffmpeg / ffprobe** on PATH (SFX synthesis + audio conversion).
 - **HyperFrames CLI** via `npx hyperframes` (used for `transcribe`, `lint`, `inspect`, `render`). Transcription uses a local Whisper model; it downloads on first run.
 

@@ -9,7 +9,13 @@
   "fps": 30,
   "scenePad": 0.55,
   "sceneCrossfade": 0.4,
-  "voiceId": "BtWabtumIemAotTjP5sk",
+  "voiceId": "default",
+  "voices": {
+    "default": "BtWabtumIemAotTjP5sk",
+    "nelson": "3Wb5I3jTbLaxngzolyPG",
+    "free": { "provider": "kokoro", "id": "am_adam" },
+    "free-uk": { "provider": "kokoro", "id": "bm_george" }
+  },
   "voiceModel": "eleven_multilingual_v2",
   "voiceSettings": {
     "stability": 0.3,
