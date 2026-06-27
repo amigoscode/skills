@@ -16,7 +16,7 @@ Create a todo per step so nothing is skipped.
 
 ## Prerequisites
 
-- **ELEVEN_LABS** API key (Creator tier or above for professional/cloned voices). Export it, or copy `.env.example` to `.env`.
+- **Voice engine** (Step 0 picks one): either an **ELEVEN_LABS** API key (Creator tier or above for professional/cloned voices; export it or copy `.env.example` to `.env`) — OR the **free local Kokoro** engine, which needs no key (Python with `kokoro-onnx`/`soundfile`; model downloads on first run).
 - **ffmpeg / ffprobe** on PATH (SFX synthesis + audio conversion).
 - **HyperFrames CLI** via `npx hyperframes` (used for `transcribe`, `lint`, `inspect`, `render`). Transcription uses a local Whisper model; it downloads on first run.
 
@@ -24,9 +24,14 @@ Create a todo per step so nothing is skipped.
 
 ## Step 0 — Load config
 
-Read `~/amigoscode-skills/explainer-video-config.json` (expand `~`). If missing, create `~/amigoscode-skills/` and copy `SKILL_DIR/config.default.json` there, then use it. Bundled defaults are working Amigoscode values. Fields: `logoPath`, `fontPath`, `designPath`, `outputDir`, `width/height/fps`, `scenePad`, `sceneCrossfade`, `voiceId`, `voiceModel`, `voiceSettings`, `sfxVolumes`, `ctaLine`.
+Read `~/amigoscode-skills/explainer-video-config.json` (expand `~`). If it exists, use its values. **If it is missing (first run), DO NOT silently copy the defaults** — load `SKILL_DIR/config.default.json` as the starting point, then use the Ask tool to confirm the user-specific fields in a single batched prompt, presenting each bundled default as the recommended first option (accept in one click, or choose "Other" to type a value): **1. ctaLine** (caption/outro sign-off, default the bundled Amigoscode line); **2. logoPath** (outro logo, default the bundled asset; offer "None" to drop it); **3. voiceId** (which `config.voices` entry to use, default the bundled voice). Overlay the answers onto `config.default.json`, create `~/amigoscode-skills/` if needed, write `~/amigoscode-skills/explainer-video-config.json`, and use it; the rest keep their bundled defaults (editable later). Fields: `logoPath`, `fontPath`, `designPath`, `outputDir`, `width/height/fps`, `scenePad`, `sceneCrossfade`, `voiceId`, `voiceModel`, `voiceSettings`, `sfxVolumes`, `ctaLine`.
 
-To change the voice, edit `voiceId` (and `voiceSettings`: lower `stability` = livelier, higher `style` = more expressive). Read `assets/design.md` — it is the brand source of truth (palette, fonts). Never invent colors.
+**Choosing the voice.** `config.voices` maps a `name` to a voice. Each entry is either a raw ElevenLabs id (string) or `{ "provider": "...", "id": "..." }`. `config.voiceId` selects one by name (or set it to a raw id directly). Two engines:
+
+- **`elevenlabs`** (default) — paid, needs the `ELEVEN_LABS` key. High quality, expressive.
+- **`kokoro`** — **free, local, no API key** (runs via `npx hyperframes tts`). The bundled `free` (`am_adam`) and `free-uk` (`bm_george`) voices use it. First run downloads the model; needs Python with `kokoro-onnx`/`soundfile` (see the `hyperframes-media` skill). Voice ids are Kokoro names like `am_adam`, `bf_emma`, `af_heart` — list them with `npx hyperframes tts --list`.
+
+To switch voices, point `voiceId` at another entry (e.g. `"free"`), or add your own. One-off override without editing config: `VOICE=free node vo/gen-vo.mjs`, or `VOICE_ID=<id> VOICE_PROVIDER=kokoro node vo/gen-vo.mjs`. Tune ElevenLabs delivery with `voiceSettings` (lower `stability` = livelier, higher `style` = more expressive). Read `assets/design.md` — it is the brand source of truth (palette, fonts). Never invent colors.
 
 ## Step 1 — Plan the 8 scenes + narration
 

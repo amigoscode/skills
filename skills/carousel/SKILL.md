@@ -31,13 +31,30 @@ cd SKILL_DIR/scripts && npm install && npx playwright install chromium
 Read `~/amigoscode-skills/carousel-config.json` (expand `~`).
 
 - **If it exists**, load and use its values.
-- **If it does NOT exist** (first run), create the `~/amigoscode-skills/` folder if
-  needed and copy `SKILL_DIR/config.default.json` to
-  `~/amigoscode-skills/carousel-config.json`, then use it.
+- **If it does NOT exist** (first run), DO NOT silently copy the defaults. **Use the
+  Ask tool to capture the user's branding before creating the config** (see below).
 
-The bundled `config.default.json` already holds working Amigoscode defaults, so the
-skill produces correct output even before anything is edited. To customize, edit
-`~/amigoscode-skills/carousel-config.json` (no need to touch the skill folder). Fields:
+**First-run onboarding (required — never skip the Ask).** When the central config is
+missing, load `SKILL_DIR/config.default.json` as the starting point, then use the Ask
+tool to confirm the user-specific branding fields. Ask these in a single batched
+prompt, presenting each bundled default as the recommended first option so the user
+can accept it in one click or choose "Other" to type their own value:
+
+1. **footerText** — website/footer text on the slides (default `www.amigoscode.com`).
+2. **outroPhoto** — presenter photo path on the outro slide (default the bundled photo;
+   offer "None" to drop it).
+3. **outroCta** — closing line on the outro slide (default `Like and Follow for more...`).
+4. **ctaLine** — the LinkedIn caption sign-off (default the bundled Amigoscode line).
+
+Start from `config.default.json`, overlay the user's answers, create the
+`~/amigoscode-skills/` folder if needed, and write the result to
+`~/amigoscode-skills/carousel-config.json`. The remaining fields (theme colors,
+`techIconsDir`, `logoPath`, `outroLogoPath`, newsletter line, etc.) keep their bundled
+defaults; tell the user they can edit the file later to change any of them. Then use
+the config for this run.
+
+To customize later, edit `~/amigoscode-skills/carousel-config.json` (no need to touch
+the skill folder). Fields:
 
 **Paths.** `outputDir`, `techIconsDir`, and `figmaConfigPath`:
 

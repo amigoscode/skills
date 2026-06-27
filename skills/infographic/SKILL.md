@@ -47,9 +47,18 @@ Examples (with the default `outputDir`):
 Read `~/amigoscode-skills/infographic-config.json` (expand `~`).
 
 - **If it exists**, load and use its values.
-- **If it does NOT exist** (first run), create the `~/amigoscode-skills/` folder if needed and copy `SKILL_DIR/config.default.json` to `~/amigoscode-skills/infographic-config.json`, then use it.
+- **If it does NOT exist** (first run), DO NOT silently copy the defaults. **Use the Ask tool to capture the user's branding before creating the config** (see below).
 
-The bundled `config.default.json` already holds working Amigoscode defaults, so the skill produces correct output even before anything is edited. To customize, edit `~/amigoscode-skills/infographic-config.json` (no need to touch the skill folder). Fields:
+**First-run onboarding (required — never skip the Ask).** When the central config is missing, load `SKILL_DIR/config.default.json` as the starting point, then use the Ask tool to confirm the user-specific branding fields. Ask these in a single batched prompt, presenting each bundled default as the recommended first option so the user can accept it in one click or choose "Other" to type their own value:
+
+1. **footerText** — website/footer text at the bottom of every infographic (default `www.amigoscode.com`).
+2. **personPhoto** — the author photo shown top-left (default `~/me2.jpg`; offer "None" to drop it).
+3. **logoPath** — the bottom wordmark (default the bundled `assets/amigoscode-wordmark.svg`; offer "None" to drop it).
+4. **ctaLine** — the LinkedIn caption sign-off (default the bundled Amigoscode line).
+
+Start from `config.default.json`, overlay the user's answers, create the `~/amigoscode-skills/` folder if needed, and write the result to `~/amigoscode-skills/infographic-config.json`. The remaining fields (`outputDir`, newsletter line, etc.) keep their bundled defaults; tell the user they can edit the file later. Then use the config for this run.
+
+To customize later, edit `~/amigoscode-skills/infographic-config.json` (no need to touch the skill folder). Fields:
 
 1. **footerText**: the URL or text shown at the bottom-left of every infographic. Default: `www.amigoscode.com`.
 2. **logoPath**: path to an SVG or PNG wordmark shown bottom-center. Default: `assets/amigoscode-wordmark.svg` (bundled, relative paths resolve against `SKILL_DIR`). Also used as the fallback icon for topics with no specific tech icon.
