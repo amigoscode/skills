@@ -15,9 +15,11 @@ the absolute install path.
 ## Prerequisites
 
 - **Node.js** with `npx` available (`tsx` runs the scripts).
-- A **`GEMINI_API_KEY`** (from https://aistudio.google.com/apikey). Export it in your
-  shell, or copy `SKILL_DIR/scripts/.env.example` to `SKILL_DIR/scripts/.env` and add
-  it there.
+- A **`GEMINI_API_KEY`** (from https://aistudio.google.com/apikey). The scripts read it
+  with this precedence: **shell environment** first, then the shared
+  **`~/amigoscode-skills/.env`** (one key file used by every Amigoscode skill), then
+  this skill's own **`SKILL_DIR/scripts/.env`** as a fallback. Set it in whichever you
+  prefer; the shared file is the easiest because all skills pick it up.
 - Install dependencies once:
 
 ```bash
@@ -35,10 +37,11 @@ Read `~/amigoscode-skills/nanobanana-config.json` (expand `~`).
 **First-run onboarding (required — never skip the Ask).** When the central config is
 missing:
 
-1. **API key.** If `GEMINI_API_KEY` is not set in the environment and
-   `SKILL_DIR/scripts/.env` does not already contain a real key, use the Ask tool to
-   request the user's `GEMINI_API_KEY`, then write it to `SKILL_DIR/scripts/.env` as
-   `GEMINI_API_KEY=<value>`. Never echo the key back or commit it.
+1. **API key.** If `GEMINI_API_KEY` is not already resolvable (not in the shell
+   environment, not in `~/amigoscode-skills/.env`, and not in `SKILL_DIR/scripts/.env`),
+   use the Ask tool to request the user's `GEMINI_API_KEY`, then write it to the shared
+   **`~/amigoscode-skills/.env`** as `GEMINI_API_KEY=<value>` (creating the file if
+   needed) so every Amigoscode skill can use it. Never echo the key back or commit it.
 2. **Preferences.** Load `SKILL_DIR/config.default.json` as the starting point, then
    use the Ask tool to confirm these fields in a single batched prompt, presenting each
    bundled default as the recommended first option (accept in one click, or "Other" to

@@ -17,7 +17,7 @@ Branding (logo, footer text) is configurable in `~/amigoscode-skills/infographic
 
 ## Prerequisites
 
-- A `GEMINI_API_KEY` (from https://aistudio.google.com/apikey). Export it in your shell, or copy `.env.example` to `.env` and add it there.
+- A `GEMINI_API_KEY` (from https://aistudio.google.com/apikey). Resolved with this precedence: **shell environment** first, then the shared **`~/amigoscode-skills/.env`** (one key file used by every Amigoscode skill), then a local `.env` in the repo root. Set it in whichever you prefer; the shared file is easiest because all skills pick it up.
 - Node.js with `npx` available. The generator runs via `tsx` and the screenshot step uses Playwright.
 - Run `npm install` once in the repo root to install dependencies.
 

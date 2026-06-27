@@ -4,11 +4,15 @@ import { GoogleGenAI } from "@google/genai";
 import mime from "mime";
 import { writeFile, readFile, mkdir } from "fs/promises";
 import { dirname, join } from "path";
+import { homedir } from "os";
 import { parseArgs } from "util";
 
-// Load GEMINI_API_KEY. A real environment variable always wins; otherwise we
-// fall back to a local .env in the repo root (one level up from assets/).
-// dotenv does not override variables that are already set in the environment.
+// Load GEMINI_API_KEY with this precedence: the shell environment always wins,
+// then the shared ~/amigoscode-skills/.env (one key file for every Amigoscode
+// skill), then a local .env in the repo root (one level up from assets/). dotenv
+// never overrides a variable already set, and an earlier load beats a later one,
+// so loading the shared file first gives shell > shared > skill-local.
+dotenvConfig({ path: join(homedir(), "amigoscode-skills", ".env") });
 dotenvConfig({
   path: join(dirname(fileURLToPath(import.meta.url)), "..", ".env"),
 });

@@ -4,8 +4,15 @@ import { GoogleGenAI } from "@google/genai";
 import mime from "mime";
 import { writeFile, mkdir } from "fs/promises";
 import { dirname, join } from "path";
+import { homedir } from "os";
 import { parseArgs } from "util";
 
+// Env precedence: the shell environment always wins, then the shared
+// ~/amigoscode-skills/.env (one key file for every Amigoscode skill), then this
+// skill's own scripts/.env as a fallback. dotenv never overrides a variable that
+// is already set, and an earlier load beats a later one, so loading the shared
+// file before the skill-local file gives shell > shared > skill-local.
+dotenvConfig({ path: join(homedir(), "amigoscode-skills", ".env") });
 dotenvConfig({ path: join(dirname(fileURLToPath(import.meta.url)), ".env") });
 
 const { values } = parseArgs({
