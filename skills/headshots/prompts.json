@@ -1,0 +1,68 @@
+{
+  "prefix": "Professional LinkedIn portrait of the person from the reference image. Preserve their exact face, hair, hairstyle, facial features, skin tone, and eye color identically, keeping identity precisely intact.",
+  "suffix": "Photorealistic, sharp focus on eyes, head-and-shoulders crop, square 1:1 aspect ratio.",
+  "smile_addon": "Change the EXPRESSION to a genuine warm friendly smile with teeth slightly showing, eyes lighting up (Duchenne smile, slight crinkle at eye corners), looking approachable and confident.",
+  "background_template": "Replace the backdrop with a saturated {COLOR} single-color studio backdrop with a soft radial halo behind the head.",
+  "styles": [
+    {
+      "n": 1,
+      "slug": "studio",
+      "label": "Studio headshot",
+      "body": "Classic studio headshot. Navy crewneck over a white tee collar, soft charcoal-to-warm-grey backdrop, three-point lighting, slight natural smile."
+    },
+    {
+      "n": 2,
+      "slug": "workspace",
+      "label": "Tech workspace",
+      "body": "Modern tech workspace. Heather-grey merino or dark button-down shirt, blurred open-plan office bokeh (wood, plants, monitors), natural side-window light."
+    },
+    {
+      "n": 3,
+      "slug": "editorial",
+      "label": "Outdoor editorial / founder",
+      "body": "Outdoor editorial founder look. Olive or charcoal zip-neck knit, out-of-focus modern urban architecture, golden-hour 45-degree key light with a subtle lens flare, 85mm lens look."
+    },
+    {
+      "n": 4,
+      "slug": "bw",
+      "label": "Monochrome B&W editorial",
+      "body": "Monochrome black-and-white editorial. Black turtleneck or dark blazer, dramatic Rembrandt key light from the upper right, deep dark-grey gradient background, fine film grain."
+    },
+    {
+      "n": 5,
+      "slug": "keynote",
+      "label": "High-key keynote",
+      "body": "High-key bright keynote look. Cream or white shirt with a light blazer, creamy off-white seamless backdrop, even high-key three-point lighting, optimistic warm smile."
+    },
+    {
+      "n": 6,
+      "slug": "boardroom",
+      "label": "Executive boardroom",
+      "body": "Executive boardroom. Sharp navy or charcoal blazer over a crisp shirt, blurred boardroom with floor-to-ceiling windows and a city skyline, warm interior light."
+    },
+    {
+      "n": 7,
+      "slug": "suit",
+      "label": "Formal executive suit",
+      "body": "Formal executive suit. Sharp tailored charcoal or navy two-piece suit, crisp white shirt with an open collar and no tie, optional pocket square, clean charcoal studio backdrop, polished confident expression. Banking, consulting, C-suite vibe."
+    },
+    {
+      "n": 8,
+      "slug": "lifestyle",
+      "label": "Natural lifestyle outdoor",
+      "body": "Natural lifestyle outdoor. Cream or beige cardigan over a white tee, heavily blurred greenery or cafe terrace, dappled daylight, genuine warm smile."
+    },
+    {
+      "n": 9,
+      "slug": "rooftop",
+      "label": "Urban rooftop sunset",
+      "body": "Urban rooftop at sunset. Sleek dark blazer over a fitted black tee, blurred city skyline at golden-hour sunset, warm rim light, cinematic colour grading."
+    },
+    {
+      "n": 10,
+      "slug": "library",
+      "label": "Intellectual library",
+      "body": "Intellectual library. Camel or beige blazer over cream silk, out-of-focus warm wooden bookshelves and a brass desk lamp, warm window key light, refined thoughtful smile. Author, professor, thought-leader vibe."
+    }
+  ]
+}

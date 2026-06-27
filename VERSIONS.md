@@ -10,10 +10,12 @@ Current versions of all skills. Agents can compare against local versions to che
 | x-card | 1.0.0 | 2026-06-23 | Generate a dark-mode X (Twitter) style quote card (1080x1350 PNG) with profile photo, blue tick, name, handle, and stats, plus a LinkedIn caption. |
 | linkedin-poster | 1.0.0 | 2026-06-23 | Fully autonomous LinkedIn poster that publishes immediately or schedules text, carousel, or image posts via Playwright. |
 | nanobanana | 1.0.0 | 2026-06-27 | Generate and edit images with Google's Gemini 3.1 Flash Image model: text-to-image, single-image edits, style transfer, and multi-image compositing. |
+| headshots | 1.0.0 | 2026-06-27 | Generate polished LinkedIn-style profile-picture variations from one reference photo, preserving the person's identity. Picks styles via checkbox, fans out one subagent per style. Self-contained Gemini generator. |
 
 ## Recent Changes
 
 ### 2026-06-27
+- Added `headshots` skill: LinkedIn-style profile-picture variations from a reference photo (10 styles, checkbox selection, one subagent per style, self-contained Gemini generator)
 - Added `nanobanana` skill: AI image generation and editing via Gemini 3.1 Flash Image (text-to-image, edits, style transfer, multi-image compositing)
 
 ### 2026-06-24
