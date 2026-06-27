@@ -19,6 +19,7 @@ Skills are markdown files that give AI agents specialized knowledge and workflow
 |-------|-------------|
 | [carousel](skills/carousel/) | Generate branded LinkedIn carousel slides (1080x1350px PNGs), a combined PDF, beat-synced MP4s, a GIF, and platform... |
 | [explainer-video](skills/explainer-video/) | Produce a branded Amigoscode vertical explainer VIDEO (1080x1920 MP4) that teaches one backend, Java, data-structures,... |
+| [headshots](skills/headshots/) | Generate polished LinkedIn-style profile-picture variations from a single reference photo, while keeping the person's... |
 | [infographic](skills/infographic/) | Generate 'HOW X WORKS' educational infographic diagrams for Amigoscode — hand-drawn style diagrams about backend/Java... |
 | [linkedin-poster](skills/linkedin-poster/) | Fully autonomous LinkedIn poster. Drives the LinkedIn web composer via Playwright/TypeScript to publish posts... |
 | [nanobanana](skills/nanobanana/) | Generate and edit images using Google's Gemini 3.1 Flash Image Preview model via the @google/genai SDK. Use this skill... |
