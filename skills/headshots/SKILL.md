@@ -30,13 +30,15 @@ Do not download anything yourself. `run.sh` handles fetching and validating the 
 
 ### Step 2: Ask which styles (checkbox)
 
-Let the user choose the styles instead of guessing. Call the **Ask tool once** with these three **multi-select** questions. The user ticks any combination across the groups; ticking everything means all ten. The slug in parentheses is what you pass to `run.sh` (do not show slugs to the user, they are for you).
+Let the user choose what to generate instead of guessing. Call the **Ask tool once** with these three **multi-select** questions. The user ticks any combination across the groups. The slug in parentheses is what you pass to `run.sh` (do not show slugs to the user, they are for you).
 
-- **Studio & office**: Studio headshot (`studio`), Tech workspace (`workspace`), High-key keynote (`keynote`), Executive boardroom (`boardroom`)
-- **Editorial & dramatic**: Outdoor editorial / founder (`editorial`), Monochrome B&W (`bw`), Urban rooftop sunset (`rooftop`)
+- **Restore & studio**: Restore original — enhance, no restyle (`restore`), Studio headshot (`studio`), Tech workspace (`workspace`), High-key keynote (`keynote`)
+- **Office & editorial**: Executive boardroom (`boardroom`), Outdoor editorial / founder (`editorial`), Monochrome B&W (`bw`), Urban rooftop sunset (`rooftop`)
 - **Formal & lifestyle**: Formal executive suit (`suit`), Natural lifestyle outdoor (`lifestyle`), Intellectual library (`library`)
 
-Map the selected labels back to their slugs. If the user selected all ten (or said "all" / "every style"), use `--all` instead of listing slugs.
+**`restore`** is different from the others: it cleans up and enhances the *original* photo (fixes blur, noise, lighting, colour) while keeping the same face, clothes, background, and crop. It is NOT a restyle, so the `--smile` and `--background` add-ons do not apply to it. The user can tick `restore` on its own, or alongside restyled looks (each ticked option produces its own output file).
+
+Map the selected labels back to their slugs. If the user selected every option (or said "all" / "everything"), use `--all` instead of listing slugs.
 
 The full style descriptions live in `prompts.json` if you need to describe one to the user.
 
@@ -89,5 +91,6 @@ Collect the path each agent reports and present a table (style → file path), p
 | 8 | lifestyle | Lifestyle outdoor — cardigan over tee, blurred greenery, warm smile |
 | 9 | rooftop | Rooftop sunset — dark blazer, golden-hour skyline, cinematic grade |
 | 10 | library | Intellectual library — camel blazer, warm bookshelves, thoughtful |
+| 11 | restore | Restore original — enhance/repair the same photo, no restyle (ignores --smile/--background) |
 
 Every prompt preserves the subject's exact face, hair, skin tone, and eye colour, and renders a photorealistic, head-and-shoulders, square 1:1 portrait. The prompt assembly (shared prefix/suffix, smile and background add-ons) is defined in `prompts.json`.

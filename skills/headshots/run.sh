@@ -89,12 +89,18 @@ data = json.load(open(sys.argv[1]))
 slug = os.environ["STYLE"]
 st = next((s for s in data["styles"] if s["slug"] == slug), None)
 if not st: sys.exit(f"unknown style slug: {slug}")
-parts = [data["prefix"], st["body"]]
-if os.environ.get("SMILE"): parts.append(data["smile_addon"])
-bg = os.environ.get("BGCOLOR","").strip()
-if bg: parts.append(data["background_template"].replace("{COLOR}", bg))
-parts.append(data["suffix"])
-print(f'{st["n"]}\t{" ".join(parts)}')
+if st.get("standalone"):
+    # e.g. "restore": keep the original composition, so use the body verbatim
+    # and skip the portrait prefix/suffix and the smile/background add-ons.
+    prompt = st["body"]
+else:
+    parts = [data["prefix"], st["body"]]
+    if os.environ.get("SMILE"): parts.append(data["smile_addon"])
+    bg = os.environ.get("BGCOLOR","").strip()
+    if bg: parts.append(data["background_template"].replace("{COLOR}", bg))
+    parts.append(data["suffix"])
+    prompt = " ".join(parts)
+print(f'{st["n"]}\t{prompt}')
 PY
 )"
     N="${MAPPED%%$'\t'*}"; PROMPT="${MAPPED#*$'\t'}"

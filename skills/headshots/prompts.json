@@ -63,6 +63,13 @@
       "slug": "library",
       "label": "Intellectual library",
       "body": "Intellectual library. Camel or beige blazer over cream silk, out-of-focus warm wooden bookshelves and a brass desk lamp, warm window key light, refined thoughtful smile. Author, professor, thought-leader vibe."
+    },
+    {
+      "n": 11,
+      "slug": "restore",
+      "label": "Restore original (enhance, no restyle)",
+      "standalone": true,
+      "body": "Restore and enhance this photograph of the person. Repair blur, noise, JPEG compression artifacts, scratches, and any damage; recover natural detail and sharpness; correct exposure, white balance, and faded or shifted colour. Keep the person's exact face, expression, pose, hairstyle, clothing, framing, and background identical to the original. This is a faithful restoration, NOT a restyle: do not change the wardrobe, background, lighting setup, crop, or aspect ratio. Produce a clean, natural, high-resolution photorealistic result that still looks like the same original photo, just clearer and better quality."
     }
   ]
 }
